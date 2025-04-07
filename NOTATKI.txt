@@ -1,0 +1,35 @@
+Struktura bazy danych:
+
+    - PassType
+        - ID
+        - Name
+        - Description
+        - Entry
+    
+    - Pass
+        - ID
+        - PassType
+        - Client
+        - EntryLeft
+        - CreatedAt
+        - ExpiredAt
+
+    - Clients
+        - ID
+        - Name
+        - Surname
+        - Phone
+    
+    - TrainingSessions
+        - ID
+        - PassID
+        - TrainingID
+        - StartedAt // data odbicia
+        - EndedAt   // data zakończenia
+        - CreatedAt // opcja gdyby chciał kalendarz
+        - CanceledAt // opcja gdyby chciał kalendarz
+    
+    - Training
+        - ID
+        - Name
+        - Description
