@@ -11,9 +11,15 @@ export class Client{
 
     @Column()
     surname: string;
+
+    @Column({ nullable: true, unique: true })
+    alias?: string;
     
     @Column()
-    phone: number;
+    phone: string;
+
+   // @Column()
+   // CreatedAt: Date;
 
     @OneToOne(() => Pass)
     @JoinColumn()

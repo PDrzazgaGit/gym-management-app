@@ -9,7 +9,7 @@ import { TrainingSession } from "../entities/TrainingSession"
 
 export const AppDataSource = new DataSource({
     type: "sqlite",
-    database: "gymdb.sqlite",
+    database: "src/main/data/gymdb.sqlite",
     synchronize: true,
     logging: false,
     entities: [Client, TrainingSession, Training, Pass, PassType],

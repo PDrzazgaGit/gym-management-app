@@ -13,7 +13,7 @@ export const Menubar = () => {
                         <Nav.Link as={Link} to="/clients">Klienci</Nav.Link>
                         <Nav.Link>Treningi</Nav.Link>
                         <Nav.Link>Karnety</Nav.Link>
-                        <Nav.Link>Kreator</Nav.Link>
+                        <Nav.Link as={Link} to="/creator">Kreator</Nav.Link>
                         <Nav.Link as={Link} to="/settings">Ustawienia</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
