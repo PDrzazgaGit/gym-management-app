@@ -8,7 +8,7 @@ const DATABASE_API = {
     addClient: (name: string, surname: string, phone: string, alias?: string): Promise<boolean> => ipcRenderer.invoke("add/client", name, surname, phone, alias),
     getClient: (name?: string, surname?: string, phone?: string, alias?: string): Promise<Client[]> => ipcRenderer.invoke("get/client", name, surname, phone, alias),
     getAll: (): Promise<Client[]> => ipcRenderer.invoke("get/all"),
-    findClient: (input: string, searchByName: boolean, searchBySurname: boolean,searchByPhone: boolean):  Promise<Client[]> => ipcRenderer.invoke("find/client", input, searchByName, searchBySurname, searchByPhone)
+    findClient: (input: string, searchByName: boolean, searchBySurname: boolean,searchByPhone: boolean, searchByPass: boolean):  Promise<Client[]> => ipcRenderer.invoke("find/client", input, searchByName, searchBySurname, searchByPhone, searchByPass)
 }
 
 contextBridge.exposeInMainWorld("database", DATABASE_API);

@@ -3,8 +3,11 @@ import { Badge, Button, ButtonProps, FormControl, InputGroup, ListGroup, Modal }
 import { StyledButton } from './StyledButton';
 import { ValidationService } from '../ui-services/ValidationService';
 
+interface ModalContextType{
+    onSave?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
+}
 
-export const AddClientModal = () => {
+export const AddClientModal: React.FC<ModalContextType> = ({onSave}) => {
 
     const [show, setShow] = useState<boolean>(false);
     const [showAlias, setShowAlias] = useState<boolean>(false);
@@ -43,6 +46,7 @@ export const AddClientModal = () => {
             setSurname('');
             setAlias('');
             setMessage("Pomyślnie dodano osobę.")
+            onSave();
         }else{
             if(alias){
                 setMessage(`${alias} się powtarza. Nadaj unikalny alias.`)

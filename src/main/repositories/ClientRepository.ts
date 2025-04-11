@@ -10,6 +10,8 @@ export class ClientRepository {
 
     public async addClient(name: string, surname: string, phone: string, alias?: string): Promise<boolean> {
 
+        // usunąć możliwość dodawania pustych stringów na backendzie i frontendzie!
+
         const existingClient = await this.repository.findOne({
             where: {
                 name, surname
@@ -61,32 +63,34 @@ export class ClientRepository {
         input: string,
         searchByName: boolean = false,
         searchBySurname: boolean = false,
-        searchByPhone: boolean = false
+        searchByPhone: boolean = false,
+        searchByPass: boolean = false
       ): Promise<Client[]> {
 
-        if(input == '')
+        if(input == '' && !searchByPass)
             return await this.getAll();
 
-        // Przygotowanie zapytania
         const queryBuilder = this.repository.createQueryBuilder("client");
       
-        // Jeśli szukamy po telefonie
-        if (searchByPhone) {
-          queryBuilder.orWhere("client.phone LIKE :input", { input: `%${input}%` });
-        }
-      
-        // Jeśli szukamy po imieniu
-        if (searchByName) {
-          queryBuilder.orWhere("client.name LIKE :input", { input: `%${input}%` });
-        }
-      
-        // Jeśli szukamy po nazwisku
-        if (searchBySurname) {
-          queryBuilder.orWhere("client.surname LIKE :input", { input: `%${input}%` });
+        if (searchByPass) {
+            // LEFT JOIN, bo możemy mieć inne OR w zapytaniu i nie chcemy ich tracić
+            queryBuilder.leftJoin("client.pass", "pass").andWhere("pass.id IS NOT NULL");
         }
 
+        if(input != ""){
+            if (searchByPhone) {
+                queryBuilder.orWhere("client.phone LIKE :input", { input: `%${input}%` });
+              }
       
-        // Wykonanie zapytania
+              if (searchByName) {
+                queryBuilder.orWhere("client.name LIKE :input", { input: `%${input}%` });
+              }
+            
+              if (searchBySurname) {
+                queryBuilder.orWhere("client.surname LIKE :input", { input: `%${input}%` });
+              }
+        }
+
         const clients = await queryBuilder.getMany();
       
         return clients;

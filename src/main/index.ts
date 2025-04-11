@@ -77,6 +77,6 @@ ipcMain.handle("get/all", async (event, args) => {
   return await clientRepository.getAll();
 });
 
-ipcMain.handle("find/client", async (event, input: string, searchByName: boolean, searchBySurname: boolean,searchByPhone: boolean) => {
-  return await clientRepository.findClient(input, searchByName, searchBySurname, searchByPhone);
+ipcMain.handle("find/client", async (event, input: string, searchByName: boolean, searchBySurname: boolean,searchByPhone: boolean, searchByPass: boolean) => {
+  return await clientRepository.findClient(input, searchByName, searchBySurname, searchByPhone, searchByPass);
 });
