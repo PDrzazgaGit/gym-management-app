@@ -4,8 +4,12 @@ import { StyledButton } from "../StyledButton"
 import { Search } from "react-bootstrap-icons"
 import { Client } from "../../../main/entities/Client"
 import { AddClientModal } from "../AddClientModal"
+import { useDb } from "../../../renderer/hooks/useDb"
+import { ManageClientModal } from "../ManageClientModal"
 
 export const Clients = () => {
+
+    const {clientManager} = useDb();
 
     const [client, setClient] = useState<Client[] | undefined>(undefined);
 
@@ -18,14 +22,13 @@ export const Clients = () => {
     const [searchByPhone, setSearchByPhone] = useState<boolean>(false);
     const [searchByPass, setSearchByPass] = useState<boolean>(false);
 
-    const getClient = async () => {
-        const result = await (window as any).database.getAll();
-        setClient(result);
-    }
-
     useEffect(() => {
         if (!client) {
-            getClient();
+            const fetch = async () =>{
+                const result = await clientManager.getAll()
+                setClient(result)
+            }
+            fetch();
         }
     }, [client])
 
@@ -52,7 +55,7 @@ export const Clients = () => {
     }
 
     const handleSearch = async () => {
-        const result = await (window as any).database.findClient(search, searchByName, searchBySurname, searchByPhone, searchByPass);
+        const result = await clientManager.findClient(search.trim(), searchByName, searchBySurname, searchByPhone, searchByPass);
         setClient(result);
     }
 
@@ -141,13 +144,16 @@ export const Clients = () => {
                         <tbody>
                             {client &&
                                 client.map((clientData, index) => (
-                                    <tr key={clientData.id}>
-                                        <td>{index + 1}.</td>
-                                        <td>{clientData.name}</td>
-                                        <td>{clientData.surname}{clientData.alias != undefined ? ` (${clientData.alias})` : ""}</td>
-                                        <td>{clientData.phone ? clientData.phone : '-'}</td>
-                                        <td>{clientData.pass ? "TAK" : 'NIE'}</td>
-                                    </tr>
+                                    <ManageClientModal client={clientData} key={clientData.id}>
+                                        <tr key={clientData.id}>
+                                            <td>{index + 1}.</td>
+                                            <td>{clientData.name}</td>
+                                            <td>{clientData.surname}{clientData.alias != undefined ? ` (${clientData.alias})` : ""}</td>
+                                            <td>{clientData.phone ? clientData.phone : '-'}</td>
+                                            <td>{clientData.pass ? "TAK" : 'NIE'}</td>
+                                        </tr>
+                                    </ManageClientModal>
+                                    
                                 ))}
                         </tbody>
                     </Table>

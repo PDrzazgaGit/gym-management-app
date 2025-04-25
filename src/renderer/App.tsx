@@ -6,18 +6,24 @@ import { Menubar } from "./components/Menubar"
 import { Settings } from "./components/pages/Settings"
 import { Clients } from "./components/pages/Clients"
 import { Creator } from "./components/pages/Creator"
+import { DbContext } from "./react-context/dbContext"
 
 export const App = () => {
 
     return (
         <>
-           
+
             <DbProvider>
                 <HashRouter>
-                <Menubar />
+                    <Menubar />
                     <Routes>
                         <Route path="/" element={<Home />}></Route>
-                        <Route path="/clients" element={<Clients />}></Route>
+                        <Route path="/clients" element={
+                            <DbProvider>
+                                <Clients />
+                            </DbProvider>
+                        }>
+                        </Route>
                         <Route path="/settings" element={<Settings />}></Route>
                         <Route path="/creator" element={<Creator />}></Route>
                     </Routes>

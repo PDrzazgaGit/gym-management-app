@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { Badge, Button, ButtonProps, FormControl, InputGroup, ListGroup, Modal } from 'react-bootstrap';
 import { StyledButton } from './StyledButton';
 import { ValidationService } from '../ui-services/ValidationService';
+import { useDb } from '../hooks/useDb';
 
 interface ModalContextType{
     onSave?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export const AddClientModal: React.FC<ModalContextType> = ({onSave}) => {
+
+    const {clientManager} = useDb();
 
     const [show, setShow] = useState<boolean>(false);
     const [showAlias, setShowAlias] = useState<boolean>(false);
@@ -33,7 +36,7 @@ export const AddClientModal: React.FC<ModalContextType> = ({onSave}) => {
     }
     
     const handleAddClient = async () => {
-        const success = await (window as any).database.addClient(
+        const success = await clientManager.addClient(
             name.trim(),
             surname.trim(),
             phone,
@@ -52,8 +55,13 @@ export const AddClientModal: React.FC<ModalContextType> = ({onSave}) => {
                 setMessage(`${alias} się powtarza. Nadaj unikalny alias.`)
                 setAlias('');
             }else{
-                setShowAlias(true);
-                setMessage(`${name} ${surname} się powtarza. Nadaj unikalny alias.`)
+                if(name === "" || surname === ""){
+                    setMessage(`Wypełnij pola imię oraz nazwisko.`)
+                }else{
+                    setShowAlias(true);
+                    setMessage(`${name} ${surname} się powtarza. Nadaj unikalny alias.`)
+                }
+               
             }
            
         }
