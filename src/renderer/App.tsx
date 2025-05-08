@@ -1,22 +1,32 @@
 import React from "react"
-import { HashRouter, Routes, Route } from "react-router-dom"
-import { DbProvider } from "./react-context/DbProvider"
-import { Home } from "./components/pages/Home"
-import { Menubar } from "./components/Menubar"
-import { Settings } from "./components/pages/Settings"
-import { Clients } from "./components/pages/Clients"
-import { Creator } from "./components/pages/Creator"
+import { Outlet } from "react-router-dom"
+import { Sidebar } from "./components/Sidebar"
+import { Container } from "react-bootstrap/esm"
 import { DbContext } from "./react-context/dbContext"
+import { DbProvider } from "./react-context/DbProvider"
 
 export const App = () => {
 
     return (
-        <>
+        <div className="d-flex">
+      <Sidebar />
+      <Container fluid className="p-4">
+        <DbProvider>
+            <Outlet />
+        </DbProvider>
+         
+      </Container>
+    </div>
+    )
+}
 
-            <DbProvider>
+
+/*
+ <DbProvider>
+            
                 <HashRouter>
-                    <Menubar />
-                    <Routes>
+               
+                   <Routes>
                         <Route path="/" element={<Home />}></Route>
                         <Route path="/clients" element={
                             <DbProvider>
@@ -29,6 +39,6 @@ export const App = () => {
                     </Routes>
                 </HashRouter>
             </DbProvider>
-        </>
-    )
-}
+ 
+
+*/
