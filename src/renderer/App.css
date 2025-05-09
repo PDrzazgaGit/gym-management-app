@@ -1,0 +1,55 @@
+.bg-gym {
+    background-color: #D7F902;
+}
+
+.text-sidebar {
+    color: white !important;
+    /* Dziedziczy kolor z rodzica */
+    text-decoration: none !important;
+    /* Usuwa podkreślenie */
+    transition: color 0.2s ease;
+}
+
+.text-sidebar:hover {
+    color: #D7F902 !important;
+    /* Twój kolor przy najechaniu */
+}
+
+@font-face {
+    font-family: 'Bebas Neue';
+    src: url('./assets/BebasNeue-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+.input-group-text {
+    border-radius: 0;
+    border: 0;
+    background-color: transparent;
+}
+
+.btn-gym {
+    background-color: white;
+    color: inherit;
+    border: 0;
+    border-color: transparent;
+}
+
+.btn-gym:hover {
+
+    color: inherit;
+    background-color: #D7F902;
+}
+
+.form-check-input:checked {
+    background-color:black;
+    border-color: black;
+    color: black;
+  }
+
+
+  

@@ -6,7 +6,7 @@ export const StyledButton: React.FC<ButtonProps> = ({ children, ...props }) => {
   return (
     <Button 
     variant="light" 
-    className='border justify-content-center align-items-center d-flex'
+    className='justify-content-center align-items-center d-flex'
     {...props}
     >
       {children}

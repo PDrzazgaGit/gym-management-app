@@ -61,9 +61,6 @@ export const Clients = () => {
 
     return (
         <Container>
-            <Row className="mb-2">
-
-            </Row>
             <Row className="mb-4">
                 <InputGroup>
                     <InputGroup.Text>Znajdź osobę</InputGroup.Text>
@@ -113,6 +110,7 @@ export const Clients = () => {
                         label="Karnet" 
                         checked={searchByPass}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>)=>setSearchByPass(e.target.checked)}
+                        
                         />
 
                         
@@ -121,7 +119,7 @@ export const Clients = () => {
 
                     <StyledButton
                         onClick={handleSearch}
-                        variant="success"
+                        variant="gym"
                     >
                         <Search 
                             

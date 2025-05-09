@@ -1,16 +1,47 @@
 import React from "react";
-import { Col, Container, Nav, Row } from "react-bootstrap";
+import { Col, Container, Nav, Row, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-export const Sidebar: React.FC = () => {
+//#D7F902
+
+interface SidebarProps {
+    width?: number;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ width }) => {
+
+    const logo = require("../assets/logo.jpg")
+
+    const defaultWidth = 250;
     return (
-        
-        <Container className="bg-light" style={{ width: '250px' }}>
-            <Row className="mt-4">
+
+        <Container className="bg-black"
+
+            style={{
+                width: `${width ? width : defaultWidth}px`,
+                height: '100vh'
+            }}>
+            <Row>
                 <Col className="p-0">
-                    <h4 className="text-center fs-2">Ewidencja</h4>
+                    <Image src={logo} width={width ? width : defaultWidth} />
                 </Col>
             </Row>
+            <Row>
+                <Col>
+                    <Nav className="d-flex flex-column fs-2 align-items-center">
+
+                        <Nav.Link as={Link} to="/home" className="text-sidebar"> Panel </Nav.Link>
+                        <Nav.Link className="text-sidebar">Treningi</Nav.Link>
+                        <Nav.Link className="text-sidebar">Karnety</Nav.Link>
+                        <Nav.Link as={Link} to="/clients" className="text-sidebar">Klienci</Nav.Link>
+                        <Nav.Link className="text-sidebar">Ustawienia</Nav.Link>
+
+                    </Nav>
+                </Col>
+
+            </Row>
+
+
         </Container>
     );
 }

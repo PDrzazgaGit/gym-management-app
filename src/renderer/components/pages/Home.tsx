@@ -5,7 +5,7 @@ export const Home = () => {
 
     return (
         <>
-        
+        Hołm
         </>
     );
 }
