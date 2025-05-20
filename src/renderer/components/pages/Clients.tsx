@@ -60,113 +60,105 @@ export const Clients = () => {
     }
 
     return (
-        <Container>
-            <Row className="mb-4">
-                <InputGroup>
-                    <InputGroup.Text>Znajdź osobę</InputGroup.Text>
-
-
-                    <FormControl type="search"
-                        onChange={handleTypeSearch}
-                        value={search}
-                    />
-
-
-                    <InputGroup.Text>
-                        <FormCheck 
-                        id="imie_check" 
-                        label="Imię" 
+    <div
+        style={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+        }}
+    >
+        <Row className="mb-4">
+            <InputGroup>
+                <InputGroup.Text>Znajdź osobę</InputGroup.Text>
+                <FormControl
+                    type="search"
+                    onChange={handleTypeSearch}
+                    value={search}
+                />
+                <InputGroup.Text>
+                    <FormCheck
+                        id="imie_check"
+                        label="Imię"
                         checked={searchByName}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>)=>setSearchByName(e.target.checked)}
+                        onChange={(e) => setSearchByName(e.target.checked)}
                         disabled={disabled}
-                        />
-
-                    </InputGroup.Text>
-                    <InputGroup.Text>
-                        <FormCheck 
-                        id="nazwisko_check" 
-                        label="Nazwisko" 
+                    />
+                </InputGroup.Text>
+                <InputGroup.Text>
+                    <FormCheck
+                        id="nazwisko_check"
+                        label="Nazwisko"
                         checked={searchBySurname}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>)=>setSearchBySurname(e.target.checked)}
-                        />
-
-                    </InputGroup.Text>
-
-                    <InputGroup.Text>
-                        <FormCheck 
-                        id="telefon_check" 
-                        label="Telefon" 
+                        onChange={(e) => setSearchBySurname(e.target.checked)}
+                    />
+                </InputGroup.Text>
+                <InputGroup.Text>
+                    <FormCheck
+                        id="telefon_check"
+                        label="Telefon"
                         checked={searchByPhone}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>)=>setSearchByPhone(e.target.checked)}
-                        />
-
-                        
-
-                    </InputGroup.Text>
-
-                    <InputGroup.Text>
-                        <FormCheck 
-                        id="pass_check" 
-                        label="Karnet" 
+                        onChange={(e) => setSearchByPhone(e.target.checked)}
+                    />
+                </InputGroup.Text>
+                <InputGroup.Text>
+                    <FormCheck
+                        id="pass_check"
+                        label="Karnet"
                         checked={searchByPass}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>)=>setSearchByPass(e.target.checked)}
-                        
-                        />
+                        onChange={(e) => setSearchByPass(e.target.checked)}
+                    />
+                </InputGroup.Text>
+                <StyledButton onClick={handleSearch} variant="gym">
+                    <Search />
+                </StyledButton>
+            </InputGroup>
+        </Row>
 
-                        
+        <div
+            style={{
+                flexGrow: 1,
+                overflowY: "auto",
+                minHeight: 0,
+            }}
+            className="mb-4"
+        >
+            <Table striped bordered hover>
+                <thead>
+                    <tr>
+                        <th className="text-muted">LP.</th>
+                        <th className="text-muted">IMIĘ</th>
+                        <th className="text-muted">NAZWISKO (ALIAS)</th>
+                        <th className="text-muted">TELEFON</th>
+                        <th className="text-muted">KARNET</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {client &&
+                        client.map((clientData, index) => (
+                            <ManageClientModal client={clientData} key={clientData.id}>
+                                <tr key={clientData.id}>
+                                    <td>{index + 1}.</td>
+                                    <td>{clientData.name}</td>
+                                    <td>
+                                        {clientData.surname}
+                                        {clientData.alias
+                                            ? ` (${clientData.alias})`
+                                            : ""}
+                                    </td>
+                                    <td>{clientData.phone ? clientData.phone : "-"}</td>
+                                    <td>{clientData.pass ? "TAK" : "NIE"}</td>
+                                </tr>
+                            </ManageClientModal>
+                        ))}
+                </tbody>
+            </Table>
+        </div>
+        <Row>
+            <Col>
+                <AddClientModal onSave={() => setClient(undefined)} />
+            </Col>
+        </Row>
+    </div>
+)
 
-                    </InputGroup.Text>
-
-                    <StyledButton
-                        onClick={handleSearch}
-                        variant="gym"
-                    >
-                        <Search 
-                            
-                        />
-                    </StyledButton>
-                </InputGroup>
-            </Row>
-            <Row>
-                <Col>
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th className="text-muted">LP.</th>
-                                <th className="text-muted">IMIĘ</th>
-                                <th className="text-muted">NAZWISKO (ALIAS)</th>
-                                <th className="text-muted">TELEFON</th>
-                                <th className="text-muted">KARNET</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {client &&
-                                client.map((clientData, index) => (
-                                    <ManageClientModal client={clientData} key={clientData.id}>
-                                        <tr key={clientData.id}>
-                                            <td>{index + 1}.</td>
-                                            <td>{clientData.name}</td>
-                                            <td>{clientData.surname}{clientData.alias != undefined ? ` (${clientData.alias})` : ""}</td>
-                                            <td>{clientData.phone ? clientData.phone : '-'}</td>
-                                            <td>{clientData.pass ? "TAK" : 'NIE'}</td>
-                                        </tr>
-                                    </ManageClientModal>
-                                    
-                                ))}
-                        </tbody>
-                    </Table>
-                </Col>
-
-            </Row>
-            <Row>
-                <Col>
-                    <AddClientModal onSave={()=>{  
-                        setClient(undefined);
-                    }}/>
-                </Col>
-            </Row>
-
-
-        </Container>
-    )
 }

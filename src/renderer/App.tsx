@@ -12,7 +12,7 @@ export const App = () => {
         <div className="d-flex p-0 m-0">
             <Sidebar />
             <div className="flex-grow-1 p-0 m-0">
-                <Container fluid className="p-4">
+                <Container fluid className="p-4" style={{height: '100vh'}}>
 
                     <DbProvider>
                         <Outlet />
