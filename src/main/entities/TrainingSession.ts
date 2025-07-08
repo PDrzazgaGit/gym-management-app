@@ -1,6 +1,6 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Training } from "./Training";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Pass } from "./Pass";
+import { Col } from "react-bootstrap/esm";
 
 @Entity()
 export class TrainingSession {
@@ -10,21 +10,15 @@ export class TrainingSession {
     @ManyToOne(() => Pass, (pass) => pass.session)
     pass: Pass;
 
-    @ManyToOne(() => Training, (training) => training.session)
-    training: Training;
-
     @Column()
-    trainingDate: Date;
+    description?: string;
 
-    @Column()
+    @CreateDateColumn()
     createdAt: Date;
 
     @Column()
-    startedAt: Date;
+    endedAt?: Date;
 
-    @Column()
-    endedAt: Date;
-
-    @Column({ default: false })
+    @Column({ default: true })
     confirmed: boolean;
 }

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, CreateDateColumn } from "typeorm";
 import { Pass } from "./Pass";
 
 @Entity()
@@ -16,10 +16,10 @@ export class Client{
     alias?: string;
     
     @Column()
-    phone: string;
+    phone?: string;
 
-   // @Column()
-   // CreatedAt: Date;
+    @CreateDateColumn()
+    createdAt: Date;
 
     @OneToOne(() => Pass)
     @JoinColumn()

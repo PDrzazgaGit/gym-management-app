@@ -8,10 +8,10 @@ export class ClientRepository {
         this.repository = dataSource.getRepository(Client);
     }
 
-    public async addClient(name: string, surname: string, phone: string, alias?: string): Promise<boolean> {
+    public async addClient(name: string, surname: string, phone?: string, alias?: string): Promise<number> {
 
         if(name === '' || surname === ''){
-            return false;
+             throw new Error("Imię i nazwisko klienta w ewidencji nie mogą być puste.");
         }
 
         const existingClient = await this.repository.findOne({
@@ -22,36 +22,35 @@ export class ClientRepository {
 
         if (existingClient) {
             if (!alias) {
-                return false;
+                 throw new Error(`Klient "${name} ${surname}" już istnieje w ewidencji. Wprowadź unikalny alias.`);
             }
 
             const existingAlias = await this.repository.findOne({ where: { alias } })
 
             if (existingAlias) {
                 // Jeśli alias nie jest unikalny, zwróć false
-                return false;
+                throw new Error(`Alias "${alias}" już istnieje w ewidencji.`);
             } else {
                 const newClient = this.repository.create({
                     name,
                     surname,
-                    phone: phone, // Upewnij się, że numer telefonu jest typu number
+                    phone: phone, 
                     alias,
-                    //    CreatedAt: new Date()
                 });
 
                 await this.repository.save(newClient);
-                return true;
+
+                return newClient.id;
             }
         } else {
             const newClient = this.repository.create({
                 name,
                 surname,
-                phone: phone, // Upewnij się, że numer telefonu jest typu number
-                //    CreatedAt: Date.now()
+                phone: phone, 
             });
 
             await this.repository.save(newClient);
-            return true;
+            return newClient.id;
         }
     }
 

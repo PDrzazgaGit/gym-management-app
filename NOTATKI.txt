@@ -1,6 +1,6 @@
 Struktura bazy danych:
 
-    - PassType
+    - PassType [DONE]
         - ID
         - Name
         - Description
@@ -8,13 +8,13 @@ Struktura bazy danych:
     
     - Pass
         - ID
+        - CARDID
         - PassType
-        - Client
+        - ClientID
         - EntryLeft
         - CreatedAt
-        - ExpiredAt
 
-    - Clients
+    - Clients [DONE]
         - ID
         - Name
         - Surname
@@ -23,13 +23,36 @@ Struktura bazy danych:
     - TrainingSessions
         - ID
         - PassID
-        - TrainingID
+        - Description
         - StartedAt // data odbicia
         - EndedAt   // data zakończenia
-        - CreatedAt // opcja gdyby chciał kalendarz
-        - CanceledAt // opcja gdyby chciał kalendarz
+
+Repozytoria:
+
+    - TrainingSessionRepo
+        - Start training session (...) return ID
+        - Get training sessions () return sessions[]
+        - End training session ()
+        - Add description to training session (ID)
+        - ClientCancelTraining -> description Client cancel
+        - CancelTraining -> Jakub canel, +1 do karnetu
     
-    - Training
-        - ID
-        - Name
-        - Description
+    - PassType [DONE]
+        - AddPassType
+        - GetPassTypes
+        - DeletePassType
+        - ModifyPassType
+
+    - Pass
+        
+
+    - Client [Done] ale dodać obsługę dodawania i usuwania przepustek
+
+
+
+    
+
+
+TRENINGI:
+    - odwołany przez klienta - utrata, za późno
+    - odwołany przez Jakuba - +1 do karnetu, za późno

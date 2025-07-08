@@ -1,6 +1,7 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, CreateDateColumn } from "typeorm";
 import { TrainingSession } from "./TrainingSession";
 import { PassType } from "./PassType";
+import { Client } from "./Client";
 
 @Entity()
 export class Pass{
@@ -14,12 +15,15 @@ export class Pass{
     @Column()
     entryLeft: number;
 
-    @Column()
-    renewalDate: Date;
+    @CreateDateColumn()
+    createdAt: Date;
 
     @OneToOne(() => PassType)
     @JoinColumn()
     passType: PassType;
+
+    @OneToOne(() => Client, client => client.pass)
+    client: Client;
 
     @OneToMany(() => TrainingSession, (session) => session.pass)
     session: TrainingSession[]
