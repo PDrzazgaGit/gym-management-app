@@ -21,7 +21,7 @@ export class Client{
     @CreateDateColumn()
     createdAt: Date;
 
-    @OneToOne(() => Pass)
+    @OneToOne(() => Pass, { onDelete: "CASCADE" })
     @JoinColumn()
-    pass?: Pass
+    pass?: Pass;
 }

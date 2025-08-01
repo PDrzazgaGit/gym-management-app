@@ -22,9 +22,6 @@ export class Pass{
     @JoinColumn()
     passType: PassType;
 
-    @OneToOne(() => Client, client => client.pass)
-    client: Client;
-
     @OneToMany(() => TrainingSession, (session) => session.pass)
     session: TrainingSession[]
 }
