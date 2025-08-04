@@ -9,7 +9,7 @@ export class ClientRepository {
         this.repository = dataSource.getRepository(Client);
     }
 
-    public async addClient(name: string, surname: string, phone?: string, alias?: string): Promise<number> {
+    public async addClient(name: string, surname: string, phone?: string, alias?: string): Promise<Client> {
 
         if (name === '' || surname === '') {
             throw new Error("Imię i nazwisko klienta w ewidencji nie mogą być puste.");
@@ -39,9 +39,8 @@ export class ClientRepository {
                     alias,
                 });
 
-                await this.repository.save(newClient);
+                return await this.repository.save(newClient);
 
-                return newClient.id;
             }
         } else {
             const newClient = this.repository.create({
@@ -50,8 +49,7 @@ export class ClientRepository {
                 phone: phone,
             });
 
-            await this.repository.save(newClient);
-            return newClient.id;
+            return await this.repository.save(newClient);
         }
     }
 
@@ -113,19 +111,34 @@ export class ClientRepository {
         return client;
     }
 
+    public async getClientByPass(pass: Pass): Promise<Client> {
+    try {
+        const client = await this.repository.findOneOrFail({
+            where: { pass: { id: pass.id } },
+            relations: ['pass'], // opcjonalnie: jeśli chcesz mieć dostęp do przepustki
+        });
+
+        return client;
+    } catch (error) {
+        throw new Error(`Nie znaleziono klienta z podaną przepustką: ${error.message}`);
+    }
+}
+
+
     public async getAll(): Promise<Client[]> {
         const clients = await this.repository.find();
         return clients;
     }
 
     public async modifyClient(
-        id: number,
+        //id: number,
+        client: Client,
         name?: string,
         surname?: string,
         phone?: string,
         alias?: string
     ): Promise<void> {
-        const client = await this.getClientById(id);
+        //const client = await this.getClientById(id);
 
         // Przygotuj nowe wartości
         const newName = name ?? client.name;
@@ -141,7 +154,7 @@ export class ClientRepository {
                 where: {
                     name: newName,
                     surname: newSurname,
-                    id: Not(id), // inny klient
+                    id: Not(client.id), // inny klient
                 }
             });
 
@@ -154,7 +167,7 @@ export class ClientRepository {
                 const aliasExists = await this.repository.findOne({
                     where: {
                         alias: newAlias,
-                        id: Not(id),
+                        id: Not(client.id),
                     }
                 });
 
@@ -173,9 +186,11 @@ export class ClientRepository {
         await this.repository.save(client);
     }
 
-
-    public async removePass(id: number) {
-        const client: Client = await this.getClientById(id);
+    public async removePass(
+        //id: number
+        client: Client
+    ) {
+        //const client: Client = await this.getClientById(id);
         if (client.pass == null) {
             throw new Error(`Klient ${client.name} ${client.surname} ${client.alias ? '(' + client.alias + ')' : ''} już nie posiadał przepustki.`);
         }
@@ -183,8 +198,12 @@ export class ClientRepository {
         await this.repository.save(client);
     }
 
-    public async addPass(id: number, pass: Pass) {
-        const client: Client = await this.getClientById(id);
+    public async assignPass(
+        //id: number, 
+        client: Client,
+        pass: Pass
+    ) {
+       // const client: Client = await this.getClientById(id);
         if (client.pass != null) {
             throw new Error(`Klient ${client.name} ${client.surname} ${client.alias ? '(' + client.alias + ')' : ''} już posiada przepustkę.`);
         }

@@ -1,6 +1,5 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Pass } from "./Pass";
-import { Col } from "react-bootstrap/esm";
 
 @Entity()
 export class TrainingSession {
@@ -17,8 +16,11 @@ export class TrainingSession {
     createdAt: Date;
 
     @Column()
+    startsAt?: Date;
+
+    @Column()
     endedAt?: Date;
 
-    @Column({ default: true })
-    confirmed: boolean;
+    @Column()
+    completed?: boolean;
 }

@@ -44,7 +44,7 @@ Repozytoria:
         - ModifyPassType
 
     - Pass
-
+        
 
     - Client
         (...)
@@ -60,3 +60,5 @@ Repozytoria:
 TRENINGI:
     - odwołany przez klienta - utrata, za późno
     - odwołany przez Jakuba - +1 do karnetu, za późno
+
+    - sugerowane działanie: można zaplanować tylko jeden trening do przodu - odbicie przepustki sprawi, że się on załaduje
