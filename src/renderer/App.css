@@ -14,7 +14,7 @@
     color: #D7F902 !important;
     /* Twój kolor przy najechaniu */
 }
-
+/*
 @font-face {
     font-family: 'Bebas Neue';
     src: url('./assets/BebasNeue-Regular.ttf') format('truetype');
@@ -24,6 +24,13 @@
 
 body {
     font-family: 'Bebas Neue', sans-serif;
+}
+*/
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .input-group-text {

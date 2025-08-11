@@ -4,12 +4,12 @@ import { PassType } from "./PassType";
 import { Client } from "./Client";
 
 @Entity()
-export class Pass{
+export class Pass {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
-    @Index({unique: true})
+    @Index({ unique: true })
     cardId: string;
 
     @Column()
@@ -18,10 +18,15 @@ export class Pass{
     @CreateDateColumn()
     createdAt: Date;
 
-    @OneToOne(() => PassType)
-    @JoinColumn()
+    @ManyToOne(() => PassType, passType => passType.passes, { eager: true })
+    @JoinColumn({ name: "passTypeId" })
     passType: PassType;
 
     @OneToMany(() => TrainingSession, (session) => session.pass)
-    session: TrainingSession[]
+    session: TrainingSession[];
+
+    @OneToOne(() => Client, client => client.pass, { onDelete: "CASCADE" })
+    @JoinColumn()
+    client: Client;
 }
+

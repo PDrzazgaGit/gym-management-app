@@ -19,7 +19,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ width }) => {
 
             style={{
                 width: `${width ? width : defaultWidth}px`,
-                height: '100vh'
+                minHeight: '100vh'
             }}>
             <Row>
                 <Col className="p-0">
@@ -31,8 +31,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ width }) => {
                     <Nav className="d-flex flex-column fs-2 align-items-center">
 
                         <Nav.Link as={Link} to="/home" className="text-sidebar"> Panel </Nav.Link>
-                        <Nav.Link className="text-sidebar">Treningi</Nav.Link>
-                        <Nav.Link className="text-sidebar">Karnety</Nav.Link>
+                        <Nav.Link as={Link} to="/trainings" className="text-sidebar">Treningi</Nav.Link>
+                        <Nav.Link as={Link} to="/passes" className="text-sidebar">Karnety</Nav.Link>
                         <Nav.Link as={Link} to="/clients" className="text-sidebar">Klienci</Nav.Link>
                         <Nav.Link className="text-sidebar">Ustawienia</Nav.Link>
 

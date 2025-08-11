@@ -6,8 +6,25 @@ import { randomUUID } from 'crypto';
 export class PassRepository {
     private repository: Repository<Pass>;
 
-    constructor(dataSource: DataSource) {
+    private static instance: PassRepository;
+
+    private constructor(dataSource: DataSource) {
         this.repository = dataSource.getRepository(Pass);
+    }
+
+    public static getInstance(dataSource: DataSource): PassRepository {
+        if (!PassRepository.instance) {
+            PassRepository.instance = new PassRepository(dataSource);
+        }
+        return PassRepository.instance;
+    }
+
+    public async findOne(id: number): Promise<Pass> {
+        const pass = await this.repository.findOne({ where: { id } });
+        if (!pass) {
+            throw new Error(`Nie znaleziono przepustki o id: ${id}.`);
+        }
+        return pass;
     }
 
     public async addPass(passType: PassType): Promise<Pass> {

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, CreateDateColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, CreateDateColumn } from "typeorm";
 import { Pass } from "./Pass";
 
 @Entity()
@@ -21,7 +21,6 @@ export class Client{
     @CreateDateColumn()
     createdAt: Date;
 
-    @OneToOne(() => Pass, { onDelete: "CASCADE" })
-    @JoinColumn()
+    @OneToOne(() => Pass, pass => pass.client)
     pass?: Pass;
 }
