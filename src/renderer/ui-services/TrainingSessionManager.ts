@@ -1,10 +1,11 @@
-import { TrainingSessionStatus } from "../../main/entities/TrainingSessionStatus";
+import { TrainingSessionStatus } from "../../main/enums/TrainingSessionStatus";
 import { TrainingSession } from "../../main/entities/TrainingSession";
+import { TrainingsDayFilter } from "../../main/enums/TrainingsDayFilter";
 
 export class TrainingSessionManager {
   private static instance: TrainingSessionManager;
 
-  private constructor() {}
+  private constructor() { }
 
   public static getInstance(): TrainingSessionManager {
     if (!this.instance) {
@@ -41,7 +42,32 @@ export class TrainingSessionManager {
     return window.api.trainingSession.end(trainingSessionId);
   }
 
-  async modifyDescription(trainingSessionId: number, description: string) {
-    return window.api.trainingSession.modifyDescription(trainingSessionId, description);
+  async modify(trainingSessionId: number, description?: string, plannedDate?: Date) {
+    return window.api.trainingSession.modify(trainingSessionId, description, plannedDate);
+  }
+
+  async get(day?: Date): Promise<TrainingSession[]> {
+    return window.api.trainingSession.get(day);
+  }
+
+  async getByDay(day: Date): Promise<TrainingSession[]> {
+    return window.api.trainingSession.getByDay(day);
+  }
+
+  async getByWeek(dayOfWeek: Date): Promise<TrainingSession[]> {
+    return window.api.trainingSession.getByWeek(dayOfWeek);
+  }
+
+  async filter(options: {
+    passId?: number;
+    planned?: boolean;
+    inprogress?: boolean;
+    completed?: boolean;
+    cancelOwner?: boolean;
+    cancelClient?: boolean;
+    trainingsDayFilter?: TrainingsDayFilter;
+    day?: Date;
+  }): Promise<TrainingSession[]> {
+    return window.api.trainingSession.filter(options);
   }
 }

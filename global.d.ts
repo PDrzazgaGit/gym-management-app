@@ -24,6 +24,7 @@ declare global {
       pass: {
         add(passTypeId: number): Promise<Pass>;
         delete(passId: number): Promise<void>;
+        getByUUID(uuid: string): Promise<Pass>;
       };
       passType: {
         add(name: string, description: string, entry: number): Promise<PassType>;
@@ -42,8 +43,21 @@ declare global {
         cancelClient(trainingSessionId: number, description?: string): Promise<void>;
         cancelOwner(trainingSessionId: number, description?: string): Promise<void>;
         end(trainingSessionId: number): Promise<void>;
-        modifyDescription(trainingSessionId: number, description: string): Promise<void>;
-      };
+        modify(trainingSessionId: number, description?: string, plannedDate?: Date): Promise<TrainingSession>;
+        get(day?: Date): Promise<TrainingSession[]>;
+        getByDay(day: Date): Promise<TrainingSession[]>;
+        getByWeek(dayOfWeek: Date): Promise<TrainingSession[]>;
+        filter(options: {
+          passId?: number;
+          planned?: boolean;
+          inprogress?: boolean;
+          completed?: boolean;
+          cancelOwner?: boolean;
+          cancelClient?: boolean;
+          trainingsDayFilter?: TrainingsDayFilter;
+          day?: Date;
+        }): Promise<TrainingSession[]>;
+      }
     };
   }
 }

@@ -81,13 +81,13 @@ export const PassTypeSettingsModal: React.FC<ModalContextType> = ({
                     className="bg-primary text-white border-0"
                 >
                     <Modal.Title className="fw-semibold fs-5">
-                        Szczegóły przepustki &quot;{passType.name}&quot;
+                        Szczegóły karnetu &quot;{passType.name}&quot;
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <p className="text-muted mb-4" style={{ textAlign: "justify" }}>
-                        Modyfikacja danych przepustki. Zmiana liczby wejść nie ma wpływu na
-                        już przypisane wejściówki.
+                        Modyfikacja danych karnetu. Zmiana liczby wejść dla danego rodzaju karnetu nie ma wpływu na
+                        przypisane wejściówki. Nie można usunąć rodzaju karnetu, jeśli jest on przypisany do klienta.
                     </p>
 
                     <Form>

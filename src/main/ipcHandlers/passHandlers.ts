@@ -16,4 +16,8 @@ export function registerPassHandlers() {
     const pass = await passRepository.findOne(passId);
     return await passRepository.deletePass(pass);
   });
+
+  ipcMain.handle("pass:get-by-uuid", async (_event, uuid: string) => {
+    return await passRepository.getPassByUUID(uuid);
+  })
 }

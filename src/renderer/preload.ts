@@ -6,7 +6,7 @@ import { TrainingSession } from "../main/entities/TrainingSession";
 import { PassType } from "../main/entities/PassType";
 import { Pass } from "../main/entities/Pass";
 import { Client } from "../main/entities/Client";
-import { TrainingSessionStatus } from "../main/entities/TrainingSessionStatus";
+import { TrainingsDayFilter } from "../main/enums/TrainingsDayFilter";
 
 
 /*
@@ -47,8 +47,28 @@ contextBridge.exposeInMainWorld('api', {
     end: (trainingSessionId: number) =>
       ipcRenderer.invoke('training-session:end', trainingSessionId),
 
-    modifyDescription: (trainingSessionId: number, description: string) =>
-      ipcRenderer.invoke('training-session:modify-description', trainingSessionId, description),
+    modify: (trainingSessionId: number, description?: string, plannedDate?: Date) =>
+      ipcRenderer.invoke('training-session:modify', trainingSessionId, description, plannedDate),
+
+    get: (day?: Date) => 
+      ipcRenderer.invoke('training-session:get', day),
+
+    getByDay:(day: Date) => 
+      ipcRenderer.invoke('training-session:get-by-day', day),
+
+    getByWeek:(dayOfWeek: Date) => 
+      ipcRenderer.invoke('training-session:get-by-week', dayOfWeek),
+    filter: (options: {
+      passId?: number;
+      planned?: boolean;
+      inprogress?: boolean;
+      completed?: boolean;
+      cancelOwner?: boolean;
+      cancelClient?: boolean;
+      trainingsDayFilter?: TrainingsDayFilter; // najlepiej TrainingsDayFilter jeśli masz typ dostępny w preload
+      day?: Date;
+    }): Promise<TrainingSession[]> =>
+      ipcRenderer.invoke('training-session:filter', options)
   },
   passType: {
     add: (name: string, description: string, entry: number): Promise<PassType> =>
@@ -69,6 +89,9 @@ contextBridge.exposeInMainWorld('api', {
 
     delete: (passId: number): Promise<void> =>
       ipcRenderer.invoke('pass:delete', passId),
+
+    getByUUID: (uuid: string): Promise<Pass> =>
+      ipcRenderer.invoke('pass:get-by-uuid'),
   },
   client: {
 

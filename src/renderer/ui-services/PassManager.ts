@@ -19,4 +19,8 @@ export class PassManager {
   async delete(passId: number) {
     return window.api.pass.delete(passId);
   }
+
+  async getByUUID(uuid: string): Promise<Pass>{
+    return window.api.pass.getByUUID(uuid);
+  }
 }

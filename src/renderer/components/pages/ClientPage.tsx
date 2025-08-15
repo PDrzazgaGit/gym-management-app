@@ -11,10 +11,8 @@ import { ClientManager } from "../../../renderer/ui-services/ClientManager";
 import { PassManager } from "../../../renderer/ui-services/PassManager";
 import { PassTypeManager } from "../../../renderer/ui-services/PassTypeManager";
 import { TrainingSessionManager } from "../../../renderer/ui-services/TrainingSessionManager";
-import { DateFormatter } from "../../../renderer/ui-services/DateFormatter";
-import { TrainingSessionSettingsModal } from "../TrainingSessionSettingsModal";
 import { PassType } from "../../../main/entities/PassType";
-import { TrainingSession } from "../../../main/entities/TrainingSession";
+import { TrainingList } from "../TrainingList";
 
 export const ClientPage = () => {
   const { client, setClient } = useClient();
@@ -37,20 +35,13 @@ export const ClientPage = () => {
 
   const [selectedPassType, setSelectedPassType] = useState<PassType | null>(null);
   const [passTypes, setPassTypes] = useState<PassType[]>();
-  const [trainingSessions, setTrainingSessions] = useState<TrainingSession[]>();
   const [message, setMessage] = useState<string | null>(null);
 
   const [confirmDeleteClient, setConfirmDeleteClient] = useState(false);
   const [confirmRemovePass, setConfirmRemovePass] = useState(false);
 
   const [refreshTrainings, setRefreshTrainings] = useState(0);
-  const [searchFilters, setSearchFilters] = useState({
-    planned: false,
-    inProgress: false,
-    completed: false,
-    ownerCancel: false,
-    clientCancel: false,
-  });
+
 
   // nowy stan do kontrolowania modala błędów
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -66,16 +57,7 @@ export const ClientPage = () => {
       navigate("/clients");
       return;
     }
-
-    trainingManager.getByPass(
-      client.pass?.id,
-      searchFilters.planned,
-      searchFilters.inProgress,
-      searchFilters.completed,
-      searchFilters.ownerCancel,
-      searchFilters.clientCancel
-    ).then(setTrainingSessions);
-  }, [client, searchFilters, refreshTrainings]);
+  }, [client]);
 
   // otwieraj modal gdy pojawi się wiadomość błędu
   useEffect(() => {
@@ -265,57 +247,10 @@ export const ClientPage = () => {
       </Row>
 
       {client?.pass && (
+        
         <Row>
-          <Col md={8}>
-            <Card className="mb-3 shadow-sm">
-              <Card.Body>
-                <Card.Title className="text-muted">Historia treningów</Card.Title>
-                <InputGroup className="mb-2 flex-wrap">
-                  {Object.entries(searchFilters).map(([key, value]) => (
-                    <FormCheck
-                      key={key}
-                      inline
-                      label={key === "clientCancel" ? "Odwołane (klient)" : key === "ownerCancel" ? "Odwołane" : key.charAt(0).toUpperCase() + key.slice(1)}
-                      checked={value}
-                      onChange={(e) => setSearchFilters(prev => ({ ...prev, [key]: e.target.checked }))}
-                      className="me-2"
-                    />
-                  ))}
-                </InputGroup>
-                <div style={{ maxHeight: "25vh", overflowY: "auto" }}>
-                  <Table hover responsive>
-                    <thead className="table-light">
-                      <tr>
-                        <th>LP.</th>
-                        <th>Status</th>
-                        <th>Data</th>
-                        <th>Opis</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {trainingSessions?.map((session, index) => (
-                        <TrainingSessionSettingsModal
-                          key={session.id}
-                          trainningSession={session}
-                          onSave={() => {
-                            setRefreshTrainings(prev => prev + 1);
-                            clientManager.getByPass(client.pass.id).then(setClient);
-                          }}
-                        >
-                          <tr>
-                            <td>{index + 1}</td>
-                            <td>{session.status}</td>
-                            <td>{session.plannedAt ? DateFormatter.formatToDateWithHours(session.plannedAt) : "Brak danych"}</td>
-                            <td>{session.description}</td>
-                          </tr>
-                        </TrainingSessionSettingsModal>
-                      ))}
-                    </tbody>
-                  </Table>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
+          
+          
 
           <Col md={4}>
             <Card className="mb-3 shadow-sm">
@@ -330,7 +265,7 @@ export const ClientPage = () => {
                   <Form.Control type="date" value={plannedDateString} onChange={(e) => {
                     setPlannedDateString(e.target.value);
                     updatePlannedDate(e.target.value, plannedHourString);
-                  }} />
+                  }}  disabled={plannedHourString != ""}/>
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Godzina</Form.Label>
@@ -344,6 +279,9 @@ export const ClientPage = () => {
                 </StyledButton>
               </Card.Body>
             </Card>
+          </Col>
+          <Col md={8}>
+            <TrainingList pass={client?.pass} maxHeight="20vh" refreshKey={refreshTrainings}/>
           </Col>
         </Row>
       )}

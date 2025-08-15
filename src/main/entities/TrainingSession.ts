@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Pass } from "./Pass";
-import { TrainingSessionStatus } from "./TrainingSessionStatus";
+import { TrainingSessionStatus } from "../enums/TrainingSessionStatus";
 
 @Entity()
 export class TrainingSession {

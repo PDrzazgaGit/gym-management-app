@@ -27,6 +27,18 @@ export class PassRepository {
         return pass;
     }
 
+    public async getPassByUUID(uuid: string): Promise<Pass> {
+        const pass = await this.repository.findOne({
+            where: { cardId: uuid }
+        });
+
+        if (!pass) {
+            throw new Error(`Nie udało się znaleźć przepustki z danym uuid: ${uuid}.`);
+        }
+
+        return pass;
+    }
+
     public async addPass(passType: PassType): Promise<Pass> {
         const pass = new Pass();
         pass.cardId = randomUUID(); // lub np. `generateCardId()`
