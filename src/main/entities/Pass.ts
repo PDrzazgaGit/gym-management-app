@@ -8,9 +8,9 @@ export class Pass {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({nullable: true})
     @Index({ unique: true })
-    cardId: string;
+    cardId?: string;
 
     @Column()
     entryLeft: number;

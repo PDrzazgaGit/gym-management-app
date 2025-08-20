@@ -7,6 +7,7 @@ import { Trainings } from './components/pages/Trainings';
 import { ClientPage } from './components/pages/ClientPage';
 import { Start } from './components/pages/Start';
 import { ClientLayout } from './components/ClientRouteLayout';
+import { Settings } from './components/pages/Settings';
 
 export const AppRouter = () => {
     return (
@@ -14,13 +15,16 @@ export const AppRouter = () => {
             <Routes>
                 <Route path="/" element={<App />}>
                     <Route index element={<Navigate to="/start" />} />
-                    <Route path="start" element={<Start/>} />
+                    <Route path="start" element={
+                         <Start />
+                    } />
                     <Route path="passes" element={<PassTypes></PassTypes>} />
                     <Route element={<ClientLayout />}>
                         <Route path="trainings" element={<Trainings></Trainings>} />
                         <Route path="clients" element={<Clients />} />
                         <Route path="clientpanel" element={<ClientPage />} />
                     </Route>
+                    <Route path="settings" element={<Settings></Settings>} />
                 </Route>
             </Routes>
         </HashRouter>

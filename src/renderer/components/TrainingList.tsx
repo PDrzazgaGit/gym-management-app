@@ -7,20 +7,22 @@ import { TrainingSession } from "../../main/entities/TrainingSession";
 import { DateFormatter } from "../../renderer/ui-services/DateFormatter";
 import { TrainingsDayFilter } from "../../main/enums/TrainingsDayFilter";
 import { Pass } from "../../main/entities/Pass";
+import { useTraining } from "../hooks/useTraining";
 
 interface TrainingListProps {
   pass?: Pass;
   maxHeight?: string;
   refreshKey?: number;
+  onSave?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-export const TrainingList: React.FC<TrainingListProps> = ({ pass, maxHeight, refreshKey }) => {
+export const TrainingList: React.FC<TrainingListProps> = ({ pass, maxHeight, refreshKey, onSave }) => {
   const trainingManager = TrainingSessionManager.getInstance();
-  
+  const {training} = useTraining();
   const [trainingSessions, setTrainingSessions] = useState<TrainingSession[]>();
   const [trainingDay, setTrainingDay] = useState<Date | null>(new Date());
   const [trainingDayString, setTrainingDayString] = useState(DateFormatter.formatToDateOnly(new Date()));
-  const [trainingsDayFilter, setTrainingsDayFilter] = useState<TrainingsDayFilter>(TrainingsDayFilter.GETBYDAY);
+  const [trainingsDayFilter, setTrainingsDayFilter] = useState<TrainingsDayFilter>(TrainingsDayFilter.GETBYWEEK);
   const [refreshTrainings, setRefreshTrainings] = useState(0);
   const [searchFilters, setSearchFilters] = useState({
     planned: false,
@@ -53,20 +55,30 @@ export const TrainingList: React.FC<TrainingListProps> = ({ pass, maxHeight, ref
     setTrainingsDayFilter(TrainingsDayFilter.GETALL);
   };
 
+  const isToday = (trainingDate?: Date): boolean => {
+    const today = new Date();
+    if(!trainingDate) return false;
+    return (
+      trainingDate.getFullYear() === today.getFullYear() &&
+      trainingDate.getMonth() === today.getMonth() &&
+      trainingDate.getDate() === today.getDate()
+    );
+}
+
   const getTableTitle = () => {
-    switch (trainingsDayFilter) {
-      case TrainingsDayFilter.GETALL:
-        return trainingDay
-          ? `Wszystkie treningi od dnia ${trainingDayString}`
-          : "Wszystkie treningi";
-      case TrainingsDayFilter.GETBYDAY:
-        return trainingDay
-          ? `Treningi z dnia ${trainingDayString}`
-          : "Dzisiejsze treningi";
-      case TrainingsDayFilter.GETBYWEEK:
-        return `Wszystkie z tygodnia dla dnia ${trainingDayString}`;
-    }
-  };
+      switch (trainingsDayFilter) {
+        case TrainingsDayFilter.GETALL:
+          return trainingDay
+            ? `Wszystkie treningi od dnia ${trainingDayString}`
+            : "Wszystkie treningi";
+        case TrainingsDayFilter.GETBYDAY:
+          return isToday(trainingDay)
+            ? "Dzisiejsze treningi"
+            : `Treningi z dnia ${trainingDayString}`;
+        case TrainingsDayFilter.GETBYWEEK:
+          return `Wszystkie z tygodnia dla dnia ${trainingDayString}`;
+      }
+    };
 
   return (
     <Card className="mb-3 shadow-sm">
@@ -99,7 +111,7 @@ export const TrainingList: React.FC<TrainingListProps> = ({ pass, maxHeight, ref
             <InputGroup>
               <Dropdown>
                 <Dropdown.Toggle variant="outline-primary">
-                  {trainingsDayFilter === TrainingsDayFilter.GETBYDAY && !trainingDay
+                  {trainingsDayFilter === TrainingsDayFilter.GETBYDAY && isToday(trainingDay)
                     ? "Dzisiaj"
                     : trainingsDayFilter}
                 </Dropdown.Toggle>
@@ -152,7 +164,10 @@ export const TrainingList: React.FC<TrainingListProps> = ({ pass, maxHeight, ref
                     showClient = {!pass}
                     key={session.id}
                     trainingSession={session}
-                    onSave={() => setRefreshTrainings((prev) => prev + 1)}
+                    onSave={() => {
+                      setRefreshTrainings((prev) => prev + 1);
+                      onSave?.();
+                    }}
                   >
                     <tr>
                       <td>{index + 1}</td>

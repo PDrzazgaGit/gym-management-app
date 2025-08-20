@@ -34,7 +34,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ width }) => {
                         <Nav.Link as={Link} to="/trainings" className="text-sidebar">Treningi</Nav.Link>
                         <Nav.Link as={Link} to="/passes" className="text-sidebar">Karnety</Nav.Link>
                         <Nav.Link as={Link} to="/clients" className="text-sidebar">Klienci</Nav.Link>
-                        <Nav.Link className="text-sidebar">Ustawienia</Nav.Link>
+                        <Nav.Link as={Link} to="/settings" className="text-sidebar">Ustawienia</Nav.Link>
 
                     </Nav>
                 </Col>

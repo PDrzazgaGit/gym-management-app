@@ -17,4 +17,7 @@ export const mainConfig: Configuration = {
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
   },
+  externals: {
+  '@pokusew/pcsc-lite': 'commonjs2 @pokusew/pcsc-lite'
+}
 };

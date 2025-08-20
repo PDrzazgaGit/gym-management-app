@@ -27,9 +27,9 @@ export const PassTypes = () => {
   const [entries, setEntries] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
-    // Modal błędu
-    const [message, setMessage] = useState<string | null>(null);
-    const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
+  // Modal błędu
+  const [message, setMessage] = useState<string | null>(null);
+  const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
 
   // Pobierz karnety
   useEffect(() => {
@@ -44,7 +44,7 @@ export const PassTypes = () => {
   const handleAddPass = async () => {
     setMessage(null);
     if (!name.trim() || !description.trim() || entries === null || entries <= 0) {
-         setShowErrorModal(true);
+      setShowErrorModal(true);
       setMessage("Proszę uzupełnić wszystkie pola poprawnie.");
       return;
     }
@@ -56,7 +56,7 @@ export const PassTypes = () => {
       setEntries(null);
       setPassTypes(undefined); // odśwież listę
     } catch (error: any) {
-        setShowErrorModal(true);
+      setShowErrorModal(true);
       setMessage(error.message || "Wystąpił błąd podczas dodawania.");
     }
     setLoading(false);
@@ -81,15 +81,15 @@ export const PassTypes = () => {
                 <tbody>
                   {passTypes &&
                     passTypes.map((passTypeData, index) => (
-                       <PassTypeSettingsModal passType={passTypeData} key={passTypeData.id} onSave={()=>setPassTypes(undefined)}>
-                            <tr key={passTypeData.id}>
-                                    <td>{index + 1}.</td>
-                                    <td>{passTypeData.name}</td>
-                                    <td>{passTypeData.description} </td>
-                                    <td>{passTypeData.entry}</td>
-                                </tr>
-                        </PassTypeSettingsModal>
-                      
+                      <PassTypeSettingsModal passType={passTypeData} key={passTypeData.id} onSave={() => setPassTypes(undefined)}>
+                        <tr key={passTypeData.id}>
+                          <td>{index + 1}.</td>
+                          <td>{passTypeData.name}</td>
+                          <td>{passTypeData.description} </td>
+                          <td>{passTypeData.entry}</td>
+                        </tr>
+                      </PassTypeSettingsModal>
+
                     ))}
                 </tbody>
               </Table>
@@ -116,6 +116,8 @@ export const PassTypes = () => {
                 <Form.Group className="mb-3" controlId="passDescription">
                   <Form.Label>Opis</Form.Label>
                   <Form.Control
+                    as="textarea"
+                    rows={3}
                     type="text"
                     placeholder="Wpisz opis"
                     value={description}

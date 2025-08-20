@@ -133,6 +133,7 @@ export const Clients = () => {
               <Form.Group className="mb-2">
                 <Form.Label>Imię</Form.Label>
                 <Form.Control
+                placeholder="Wpisz imię"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   autoFocus
@@ -142,6 +143,7 @@ export const Clients = () => {
               <Form.Group className="mb-2">
                 <Form.Label>Nazwisko</Form.Label>
                 <Form.Control
+                placeholder="Wpisz nazwisko"
                   value={surname}
                   onChange={(e) => setSurname(e.target.value)}
                   type="text"
@@ -150,6 +152,7 @@ export const Clients = () => {
               <Form.Group className="mb-2">
                 <Form.Label>Telefon</Form.Label>
                 <Form.Control
+                placeholder="Wpisz telefon (opcjonalnie)"
                   value={phone}
                   onChange={(e) => {
                     const phone = ValidationService.typingPhone(e.target.value);
@@ -165,6 +168,7 @@ export const Clients = () => {
                     value={alias}
                     onChange={(e) => setAlias(e.target.value)}
                     type="text"
+                      placeholder="Wpisz alias"
                   />
                 </Form.Group>
               )}
@@ -192,33 +196,37 @@ export const Clients = () => {
                   </Button>
                 </InputGroup>
               </Form.Group>
-              <Form.Group>
+              <InputGroup className="flex-wrap">
                 <Form.Check
                     id="imie_check"
                     label="Imię"
                     checked={searchByName}
                     onChange={(e) => setSearchByName(e.target.checked)}
                     disabled={disabled}
+                    className="me-2"
                   />
                   <Form.Check
                     id="nazwisko_check"
                     label="Nazwisko"
                     checked={searchBySurname}
                     onChange={(e) => setSearchBySurname(e.target.checked)}
+                    className="me-2"
                   />
                   <Form.Check
                     id="telefon_check"
                     label="Telefon"
                     checked={searchByPhone}
                     onChange={(e) => setSearchByPhone(e.target.checked)}
+                    className="me-2"
                   />
                   <Form.Check
                     id="pass_check"
                     label="Karnet"
                     checked={searchByPass}
                     onChange={(e) => setSearchByPass(e.target.checked)}
+                    className="me-2"
                   />
-              </Form.Group>
+                </InputGroup>
 
             </Card.Body>
           </Card>

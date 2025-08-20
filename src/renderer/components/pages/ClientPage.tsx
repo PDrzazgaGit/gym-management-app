@@ -13,6 +13,10 @@ import { PassTypeManager } from "../../../renderer/ui-services/PassTypeManager";
 import { TrainingSessionManager } from "../../../renderer/ui-services/TrainingSessionManager";
 import { PassType } from "../../../main/entities/PassType";
 import { TrainingList } from "../TrainingList";
+import { AssignCardToPassModal } from "../AssignCardToPassModal";
+import { AcrProvider } from "../../../renderer/react-context/AcrProvider";
+import { CardData } from "../../../main/data/CardData";
+import { Client } from "../../../main/entities/Client";
 
 export const ClientPage = () => {
   const { client, setClient } = useClient();
@@ -41,7 +45,6 @@ export const ClientPage = () => {
   const [confirmRemovePass, setConfirmRemovePass] = useState(false);
 
   const [refreshTrainings, setRefreshTrainings] = useState(0);
-
 
   // nowy stan do kontrolowania modala błędów
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -77,13 +80,23 @@ export const ClientPage = () => {
     try {
       const updatedClient = await clientManager.modify(client?.id, name, surname, phone, alias);
       if (selectedPassType) {
-        const newPass = await passManager.add(selectedPassType.id);
-        const updated = await clientManager.assignPass(client.id, newPass.id);
-        setClient(updated);
+
+        if(client.pass && client.pass.entryLeft === 0){
+          const extendedPass = await passManager.extend(client.pass.id, selectedPassType.id);
+          const updated: Client = await clientManager.getByPass(extendedPass.id);
+          setClient(updated);
+        }else{
+          const newPass = await passManager.add(selectedPassType.id);
+          const updated: Client = await clientManager.assignPass(client.id, newPass.id);
+           setClient(updated);
+        }
+
         setSelectedPassType(null);
       } else {
         setClient(updatedClient);
       }
+      setConfirmRemovePass(false);
+      setConfirmDeleteClient(false);
     } catch (error) {
       setMessage((error as Error).message);
     }
@@ -91,7 +104,7 @@ export const ClientPage = () => {
 
   const handleAddTraining = async () => {
     try {
-      await trainingManager.create(description, client?.pass?.id, plannedDate);
+      await trainingManager.create(client?.pass?.id, description, plannedDate);
       setDescription("");
       setPlannedDate(null);
       setPlannedDateString("");
@@ -169,19 +182,35 @@ export const ClientPage = () => {
               <Card.Title className="text-muted">Dane klienta</Card.Title>
               <Form.Group className="mb-2">
                 <Form.Label>Imię</Form.Label>
-                <Form.Control value={name} onChange={(e) => setName(ValidationService.typingNaming(e.target.value))} />
+                <Form.Control
+                  value={name}
+                  onChange={(e) => setName(ValidationService.typingNaming(e.target.value))}
+                  placeholder="Wpisz imię"
+                />
               </Form.Group>
               <Form.Group className="mb-2">
                 <Form.Label>Nazwisko</Form.Label>
-                <Form.Control value={surname} onChange={(e) => setSurname(ValidationService.typingNaming(e.target.value))} />
+                <Form.Control
+                  value={surname}
+                  onChange={(e) => setSurname(ValidationService.typingNaming(e.target.value))}
+                  placeholder="Wpisz nazwisko"
+                />
               </Form.Group>
               <Form.Group className="mb-2">
                 <Form.Label>Telefon</Form.Label>
-                <Form.Control value={phone} onChange={(e) => setPhone(ValidationService.typingPhone(e.target.value))} />
+                <Form.Control
+                  value={phone}
+                  onChange={(e) => setPhone(ValidationService.typingPhone(e.target.value))}
+                  placeholder="Wpisz telefon (opcjonalnie)"
+                />
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label>Alias</Form.Label>
-                <Form.Control value={alias ?? ""} onChange={(e) => setAlias(ValidationService.typingAlias(e.target.value))} />
+                <Form.Control
+                  value={alias ?? ""}
+                  onChange={(e) => setAlias(ValidationService.typingAlias(e.target.value))}
+                  placeholder="Wpisz alias (opcjonalnie)"
+                />
               </Form.Group>
               {confirmDeleteClient ? (
                 <div className="d-flex gap-2">
@@ -211,9 +240,36 @@ export const ClientPage = () => {
                     <ListGroup.Item>{`Karnet: ${client.pass.passType.name}`}</ListGroup.Item>
                     <ListGroup.Item>{`Data zakupu: ${client.pass.createdAt.toISOString().split("T")[0]}`}</ListGroup.Item>
                     <ListGroup.Item>{`Pozostałych wejść: ${client.pass.entryLeft}`}</ListGroup.Item>
+                    <ListGroup.Item>{`Przypisana karta: ${client.pass.cardId ? "Tak" : "Nie"}`}</ListGroup.Item>
                   </ListGroup>
+
+
+
+                  {client.pass.entryLeft === 0 && (
+                    <Dropdown className="mb-3">
+                      <Dropdown.Toggle variant="warning" disabled={!passTypes?.length}>
+                        {selectedPassType ? selectedPassType.name : "Przedłuż karnet na"}
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        {passTypes?.map((pt) => (
+                          <Dropdown.Item key={pt.id} onClick={() => setSelectedPassType(pt)}>
+                            {`${pt.name} (${pt.entry})`}
+                          </Dropdown.Item>
+                        ))}
+                        <Dropdown.Item onClick={() => setSelectedPassType(null)}>Anuluj</Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  ) || (
+                      <AssignCardToPassModal
+                        className="mb-3"
+                        client={client}
+                        onSave={async () => {
+                          handleSave();
+                        }}
+                      />
+                    )}
                   {confirmRemovePass ? (
-                    <div className="d-flex gap-2">
+                    <div className="d-flex gap-2 ">
                       <StyledButton variant="danger" onClick={handleRemovePass}>
                         Potwierdź usunięcie
                       </StyledButton>
@@ -225,10 +281,11 @@ export const ClientPage = () => {
                     <StyledButton variant="outline-danger" onClick={() => setConfirmRemovePass(true)}>
                       Usuń karnet
                     </StyledButton>
+
                   )}
                 </>
               ) : (
-                <Dropdown className="mb-2">
+                <Dropdown className="mb-3">
                   <Dropdown.Toggle variant="warning" disabled={!passTypes?.length}>
                     {selectedPassType ? selectedPassType.name : "Dodaj karnet"}
                   </Dropdown.Toggle>
@@ -238,6 +295,7 @@ export const ClientPage = () => {
                         {`${pt.name} (${pt.entry})`}
                       </Dropdown.Item>
                     ))}
+                    <Dropdown.Item onClick={() => setSelectedPassType(null)}>Anuluj</Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
               )}
@@ -247,10 +305,10 @@ export const ClientPage = () => {
       </Row>
 
       {client?.pass && (
-        
+
         <Row>
-          
-          
+
+
 
           <Col md={4}>
             <Card className="mb-3 shadow-sm">
@@ -258,14 +316,21 @@ export const ClientPage = () => {
                 <Card.Title className="text-muted">Nowy trening</Card.Title>
                 <Form.Group className="mb-2">
                   <Form.Label>Opis</Form.Label>
-                  <Form.Control value={description} onChange={(e) => setDescription(e.target.value)} />
+                  <Form.Control
+                    as="textarea"
+                    rows={3}
+                    type="text"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Wpisz opis"
+                  />
                 </Form.Group>
                 <Form.Group className="mb-2">
                   <Form.Label>Data</Form.Label>
                   <Form.Control type="date" value={plannedDateString} onChange={(e) => {
                     setPlannedDateString(e.target.value);
                     updatePlannedDate(e.target.value, plannedHourString);
-                  }}  disabled={plannedHourString != ""}/>
+                  }} disabled={plannedHourString != ""} />
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Godzina</Form.Label>
@@ -281,7 +346,7 @@ export const ClientPage = () => {
             </Card>
           </Col>
           <Col md={8}>
-            <TrainingList pass={client?.pass} maxHeight="20vh" refreshKey={refreshTrainings}/>
+            <TrainingList pass={client?.pass} maxHeight="20vh" refreshKey={refreshTrainings} onSave={handleSave}/>
           </Col>
         </Row>
       )}

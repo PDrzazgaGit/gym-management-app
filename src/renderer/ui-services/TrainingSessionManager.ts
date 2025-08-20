@@ -14,8 +14,8 @@ export class TrainingSessionManager {
     return this.instance;
   }
 
-  async create(description: string, passId: number, plannedDate?: Date): Promise<TrainingSession> {
-    return window.api.trainingSession.create(description, passId, plannedDate);
+  async create(passId: number, description?: string, plannedDate?: Date): Promise<TrainingSession> {
+    return window.api.trainingSession.create(passId, description, plannedDate);
   }
 
   async getByPass(passId: number, planned: boolean = false,
@@ -26,7 +26,7 @@ export class TrainingSessionManager {
     return window.api.trainingSession.getByPass(passId, planned, inprogress, completed, cancelOwner, cancelClient);
   }
 
-  async start(trainingSessionId: number) {
+  async start(trainingSessionId: number): Promise<TrainingSession> {
     return window.api.trainingSession.start(trainingSessionId);
   }
 
@@ -38,7 +38,7 @@ export class TrainingSessionManager {
     return window.api.trainingSession.cancelOwner(trainingSessionId, description);
   }
 
-  async end(trainingSessionId: number) {
+  async end(trainingSessionId: number): Promise<TrainingSession> {
     return window.api.trainingSession.end(trainingSessionId);
   }
 

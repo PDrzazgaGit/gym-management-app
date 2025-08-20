@@ -6,8 +6,9 @@ import { TrainingSessionManager } from "../ui-services/TrainingSessionManager";
 import { DateFormatter } from "../ui-services/DateFormatter";
 import { TrainingSessionStatus } from "../../main/enums/TrainingSessionStatus";
 import { useClient } from "../hooks/useClient";
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 import { ClientManager } from "../ui-services/ClientManager";
+import { useTraining } from "../hooks/useTraining";
 
 interface ModalContextType {
     trainingSession: TrainingSession;
@@ -23,10 +24,12 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
     const navigate = useNavigate();
     const { setClient } = useClient();
 
-    const [show, setShow] = useState<boolean>(false);
-    const [confirmCancel, setConfirmCancel] = useState<"client" | "owner" | null>(null);
+    const { training, setTraining } = useTraining();
 
-    const [description, setDescription] = useState<string>(trainingSession.description);
+    const [show, setShow] = useState<boolean>(false);
+    const [confirmButton, setConfirmButton] = useState<"client" | "owner" | "endTraining" | "startTraining" | null>(null);
+
+    const [description, setDescription] = useState<string>(trainingSession.description ?? '');
     const [plannedDateString, setPlannedDateString] = useState("");
     const [plannedHourString, setPlannedHourString] = useState("");
     const [plannedDate, setPlannedDate] = useState<Date | null>(null);
@@ -38,7 +41,7 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
     const handleClose = () => {
         onSave && onSave();
         setShow(false);
-        setConfirmCancel(null);
+        setConfirmButton(null);
         setDescription(description);
         setMessage(null);
         setPlannedDateString("");
@@ -54,11 +57,18 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
 
     const handleSave = async () => {
         try {
-            if (confirmCancel === "client") {
+            if (confirmButton === "client") {
                 await trainingSessionManager.cancelClient(trainingSession.id, description);
-            } else if (confirmCancel === "owner") {
+            } else if (confirmButton === "owner") {
                 await trainingSessionManager.cancelOwner(trainingSession.id, description);
-            } else {
+            } else if (confirmButton === "endTraining") {
+                await trainingSessionManager.end(trainingSession.id);
+            } else if (confirmButton === "startTraining") {
+                const updated = await trainingSessionManager.start(trainingSession.id);
+                setTraining(updated);
+                navigate("/start");
+            } {
+                console.log(plannedDate)
                 await trainingSessionManager.modify(trainingSession.id, description, plannedDate);
             }
             handleClose();
@@ -104,7 +114,11 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
     const clickableChild = React.cloneElement(children, {
         onClick: (e: React.MouseEvent) => {
             children.props?.onClick?.(e);
-            handleShow();
+            if (training && trainingSession.id === training.id) {
+                navigate("/start")
+            } else {
+                handleShow();
+            }
         },
         style: {
             ...(children.props.style || {}),
@@ -133,11 +147,11 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
                             trainingSession.status !== TrainingSessionStatus.CANCELED_OWNER && (
                                 <>
                                     <ListGroup.Item className="border-0">
-                                        {`${trainingSession.startsAt ? `Rozpoczęto: ${trainingSession.startsAt}` : "Oczekuje na rozpoczęcie"
+                                        {`${trainingSession.startsAt ? `Rozpoczęto: ${DateFormatter.formatToDateWithHours(trainingSession.startsAt)}` : "Oczekuje na rozpoczęcie"
                                             }`}
                                     </ListGroup.Item>
                                     <ListGroup.Item className="border-0">
-                                        {`${trainingSession.endedAt ? `Zakończono: ${trainingSession.endedAt}` : "Oczekuje na zakończenie"
+                                        {`${trainingSession.endedAt ? `Zakończono: ${DateFormatter.formatToDateWithHours(trainingSession.endedAt)}` : "Oczekuje na zakończenie"
                                             }`}
                                     </ListGroup.Item>
                                     <ListGroup.Item className="border-0">
@@ -153,7 +167,7 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
                                 <ListGroup.Item className="border-0">
                                     {`${trainingSession.endedAt ? `Odwołano: ${DateFormatter.formatToDateOnly(trainingSession.endedAt)}` : "Brak danych"
                                         }`}
-                                </ListGroup.Item> 
+                                </ListGroup.Item>
                             </>
                         )}
                         <ListGroup.Item className="border-0">
@@ -162,11 +176,13 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
                                     Opis
                                 </Form.Label>
                                 <Form.Control
+                                    as="textarea"
+                                    rows={3}
                                     onChange={handleTypeDescription}
                                     value={description}
                                     type="text"
                                     placeholder={
-                                        !confirmCancel
+                                        !confirmButton || confirmButton === "endTraining" || confirmButton === "startTraining"
                                             ? undefined
                                             : "Powód odwołania (opcjonalne)"
                                     }
@@ -194,15 +210,39 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
                         )}
 
 
+                        {trainingSession.status === TrainingSessionStatus.IN_PROGRESS && !confirmButton &&(
+                            <ListGroup.Item className="border-0">
+                                <StyledButton
+                                    variant="outline-warning"
+                                    onClick={() => setConfirmButton("endTraining")}
+                                >
+                                    Zakończ trening
+                                </StyledButton>
+                            </ListGroup.Item>
+
+                        )}
+
+                        {trainingSession.status === TrainingSessionStatus.PLANNED && !confirmButton &&(
+                            <ListGroup.Item className="border-0">
+                                <StyledButton
+                                    variant="outline-success"
+                                    onClick={() => setConfirmButton("startTraining")}
+                                >
+                                    Rozpocznij trening bez karty
+                                </StyledButton>
+                            </ListGroup.Item>
+
+                        )}
 
 
-                        {trainingSession.status === TrainingSessionStatus.PLANNED && !confirmCancel && (
+
+                        {trainingSession.status === TrainingSessionStatus.PLANNED && !confirmButton && (
                             <>
                                 <ListGroup.Item className="border-0">
                                     <StyledButton
                                         variant="outline-danger"
                                         onClick={() => {
-                                            setConfirmCancel("client");
+                                            setConfirmButton("client");
                                             setDescription("");
                                         }}
                                     >
@@ -213,7 +253,7 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
                                     <StyledButton
                                         variant="outline-danger"
                                         onClick={() => {
-                                            setConfirmCancel("owner");
+                                            setConfirmButton("owner");
                                             setDescription("");
                                         }}
                                     >
@@ -223,15 +263,15 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
                             </>
                         )}
 
-                        {confirmCancel && (
+                        {confirmButton && (
                             <ListGroup.Item className="border-0 d-flex gap-2">
-                                <StyledButton variant="danger" onClick={handleSave}>
-                                    Potwierdź odwołanie
+                                <StyledButton variant={confirmButton === "startTraining" ? "success" : "danger"} onClick={handleSave}>{ }
+                                    {confirmButton === "endTraining" ? "Potwierdź zakończenie" : (confirmButton === "startTraining" ? "Potwierdź rozpoczęcie" : "Potwierdź odwołanie")}
                                 </StyledButton>
                                 <StyledButton
                                     variant="outline-secondary"
                                     onClick={() => {
-                                        setConfirmCancel(null);
+                                        setConfirmButton(null);
                                         setDescription(trainingSession.description);
                                     }}
                                 >
@@ -261,7 +301,7 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
                         Anuluj
                     </StyledButton>
                     {/* Pokaż przycisk "Zapisz zmiany" tylko, gdy nie czekamy na potwierdzenie odwołania */}
-                    {!confirmCancel && (
+                    {!confirmButton && (
                         <StyledButton variant="success" onClick={handleSave} disabled={plannedDateString && !plannedHourString}>
                             Zapisz zmiany
                         </StyledButton>

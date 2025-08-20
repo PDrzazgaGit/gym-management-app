@@ -104,6 +104,8 @@ export const PassTypeSettingsModal: React.FC<ModalContextType> = ({
                         <Form.Group className="mb-3" controlId="passDescription">
                             <Form.Label className="fw-semibold">Opis</Form.Label>
                             <Form.Control
+                                    as="textarea" 
+                                    rows={3} 
                                 type="text"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}

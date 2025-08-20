@@ -7,6 +7,7 @@ import { PassType } from "src/main/entities/PassType";
 import { Pass } from "src/main/entities/Pass";
 import { Client } from "src/main/entities/Client";
 import { TrainingSessionStatus } from "src/main/entities/TrainingSessionStatus";
+import { Card } from "nfc-pcsc";
 
 declare global {
   interface Window {
@@ -25,6 +26,8 @@ declare global {
         add(passTypeId: number): Promise<Pass>;
         delete(passId: number): Promise<void>;
         getByUUID(uuid: string): Promise<Pass>;
+        tryAssignCard(passId: number, previousUUID: string): Promise<string | null>
+        extend(passId: number, passTypeId: number): Promise<Pass>
       };
       passType: {
         add(name: string, description: string, entry: number): Promise<PassType>;
@@ -33,16 +36,16 @@ declare global {
         delete(passTypeId: number): Promise<void>;
       };
       trainingSession: {
-        create(description: string, passId: number, plannedDate?: Date): Promise<TrainingSession>;
+        create(passId: number, description?: string, plannedDate?: Date): Promise<TrainingSession>;
         getByPass(passId: number, planned: boolean = false,
-    inprogress: boolean = false,
-    completed: boolean = false,
-    cancelOwner: boolean = false,
-    cancelClient: boolean = false): Promise<TrainingSession[]>;
-        start(trainingSessionId: number): Promise<void>;
+          inprogress: boolean = false,
+          completed: boolean = false,
+          cancelOwner: boolean = false,
+          cancelClient: boolean = false): Promise<TrainingSession[]>;
+        start(trainingSessionId: number): Promise<TrainingSession>;
         cancelClient(trainingSessionId: number, description?: string): Promise<void>;
         cancelOwner(trainingSessionId: number, description?: string): Promise<void>;
-        end(trainingSessionId: number): Promise<void>;
+        end(trainingSessionId: number): Promise<TrainingSession>;
         modify(trainingSessionId: number, description?: string, plannedDate?: Date): Promise<TrainingSession>;
         get(day?: Date): Promise<TrainingSession[]>;
         getByDay(day: Date): Promise<TrainingSession[]>;
@@ -57,9 +60,27 @@ declare global {
           trainingsDayFilter?: TrainingsDayFilter;
           day?: Date;
         }): Promise<TrainingSession[]>;
+      };
+      acrManager: {
+        isAvailable(): Promise<boolean>;
+        read(): Promise<CardData>;
+        write(data: CardData): Promise<void>;
+        onReaderConnected(callback: (name: string) => void): void;
+        onReaderDisconnected(callback: (name: string) => void): void;
+        onCardInserted(callback: (card: Card) => void): void;
+        onCardRemoved(callback: (card: Card) => void): void;
+        onReaderError(callback: (err: any) => void): void;
+        offReaderConnected(callback: (name: string) => void): void;
+        offReaderDisconnected(callback: (name: string) => void): void;
+        offCardInserted(callback: (card: Card) => void): void;
+        offCardRemoved(callback: (card: Card) => void): void;
+        offReaderError(callback: (err: any) => void): void;
+      };
+      other: {
+        openFolder(folderName: "db" | "log" | "config"): Promise<void>;
       }
     };
   }
 }
 
-export {};
+export { };

@@ -23,4 +23,12 @@ export class PassManager {
   async getByUUID(uuid: string): Promise<Pass>{
     return window.api.pass.getByUUID(uuid);
   }
+
+  async tryAssignCard(passId: number, previousUUID: string): Promise<string | null>{
+    return window.api.pass.tryAssignCard(passId, previousUUID);
+  }
+
+  async extend(passId: number, passTypeId: number): Promise<Pass>{
+    return window.api.pass.extend( passId, passTypeId);
+  }
 }

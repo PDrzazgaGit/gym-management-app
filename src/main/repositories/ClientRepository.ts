@@ -2,6 +2,7 @@ import { DataSource, Repository, Not } from "typeorm";
 import { Client } from "../entities/Client";
 import { Pass } from "../entities/Pass";
 import { PassRepository } from "./PassRepository";
+import { AppError } from "../data/AppError";
 
 export class ClientRepository {
     private repository: Repository<Client>;
@@ -23,14 +24,14 @@ export class ClientRepository {
     public async findOne(id: number): Promise<Client> {
         const client = await this.repository.findOne({ where: { id }, relations: ['pass'] });
         if (!client) {
-            throw new Error(`Nie znaleziono klienta o id: ${id}.`);
+            throw new AppError(`Nie znaleziono klienta.`, `Id: '${id}'.`);
         }
         return client;
     }
 
     public async addClient(name: string, surname: string, phone?: string, alias?: string): Promise<Client> {
         if (!name?.trim() || !surname?.trim()) {
-            throw new Error("Imię i nazwisko klienta nie mogą być puste.");
+            throw new AppError("Imię i nazwisko klienta nie mogą być puste.");
         }
 
         try {
@@ -38,17 +39,17 @@ export class ClientRepository {
 
             if (existingClient) {
                 if (!alias?.trim()) {
-                    throw new Error(`Klient "${name} ${surname}" już istnieje. Wprowadź unikalny alias.`);
+                    throw new AppError(`Klient "${name} ${surname}" już istnieje. Wprowadź unikalny alias.`);
                 }
 
                 const existingAlias = await this.repository.findOne({ where: { alias } });
                 if (existingAlias) {
-                    throw new Error(`Alias "${alias}" już istnieje.`);
+                    throw new AppError(`Alias "${alias}" już istnieje.`);
                 }
             } else if (alias) {
                 const existingAlias = await this.repository.findOne({ where: { alias } });
                 if (existingAlias) {
-                    throw new Error(`Alias "${alias}" już istnieje.`);
+                    throw new AppError(`Alias "${alias}" już istnieje.`);
                 }
             }
             if (alias) {
@@ -60,7 +61,10 @@ export class ClientRepository {
             }
 
         } catch (error) {
-            throw new Error(`Nie udało się dodać klienta: ${error.message}`);
+            if (error instanceof AppError) {
+                throw error;
+            }
+            throw new AppError(`Nie udało się dodać klienta.`, { error });
         }
     }
 
@@ -68,7 +72,7 @@ export class ClientRepository {
         try {
             return await this.repository.find({ relations: ['pass'] });
         } catch (error) {
-            throw new Error(`Nie udało się pobrać wszystkich klientów: ${error.message}`);
+            throw new AppError(`Nie udało się pobrać wszystkich klientów.`, error);
         }
     }
 
@@ -80,7 +84,7 @@ export class ClientRepository {
             });
             return client;
         } catch (error) {
-            throw new Error(`Nie znaleziono klienta z daną przepustką: ${error.message}`);
+            throw new AppError(`Nie znaleziono klienta z daną przepustką.`, error);
         }
     }
 
@@ -110,13 +114,13 @@ export class ClientRepository {
 
             if (searchByPass) {
                 queryBuilder.leftJoinAndSelect("client.pass", "pass").leftJoinAndSelect("pass.passType", "passType").andWhere("pass.id IS NOT NULL");
-            }else{
+            } else {
                 queryBuilder.leftJoinAndSelect("client.pass", "pass").leftJoinAndSelect("pass.passType", "passType");
             }
 
             return await queryBuilder.getMany();
         } catch (error) {
-            throw new Error(`Nie udało się wyszukać klientów: ${error.message}`);
+            throw new AppError(`Nie udało się wyszukać klientów.`, error);
         }
     }
 
@@ -129,13 +133,13 @@ export class ClientRepository {
     ): Promise<Client> {
         try {
             if (!name?.trim() || !surname?.trim()) {
-                throw new Error("Imię i nazwisko klienta nie mogą być puste.");
+                throw new AppError("Imię i nazwisko klienta nie mogą być puste.");
             }
 
             const newName = name ?? client.name;
             const newSurname = surname ?? client.surname;
             const newPhone = phone ?? client.phone;
-           // const newAlias = alias ?? client.alias;
+            // const newAlias = alias ?? client.alias;
             const newAlias = alias?.trim() === "" ? null : alias;
             const isChangingIdentity = newName !== client.name || newSurname !== client.surname;
 
@@ -150,7 +154,7 @@ export class ClientRepository {
 
                 if (duplicate) {
                     if (!newAlias?.trim()) {
-                        throw new Error(`Istnieje już klient "${newName} ${newSurname}". Wprowadź alias.`);
+                        throw new AppError(`Istnieje już klient "${newName} ${newSurname}". Wprowadź alias.`);
                     }
 
                     const aliasExists = await this.repository.findOne({
@@ -161,7 +165,7 @@ export class ClientRepository {
                     });
 
                     if (aliasExists) {
-                        throw new Error(`Alias "${newAlias}" jest już zajęty.`);
+                        throw new AppError(`Alias "${newAlias}" jest już zajęty.`);
                     }
                 }
             }
@@ -173,36 +177,39 @@ export class ClientRepository {
 
             return await this.repository.save(client);
         } catch (error) {
-            throw new Error(`Nie udało się zmodyfikować klienta: ${error.message}`);
+            if (error instanceof AppError) {
+                throw error;
+            }
+            throw new AppError(`Nie udało się zmodyfikować klienta.`, error);
         }
     }
 
     public async assignPass(client: Client, pass: Pass): Promise<Client> {
         if (client.pass != null) {
-            throw new Error(`Klient ${client.name} ${client.surname}${client.alias ? ' (' + client.alias + ')' : ''} już posiada przepustkę.`);
+            throw new AppError(`Klient ${client.name} ${client.surname}${client.alias ? ' (' + client.alias + ')' : ''} już posiada przepustkę.`);
         }
 
         try {
-        
+
             client.pass = pass;
             return await this.repository.save(client);
-            
+
         } catch (error) {
-            throw new Error(`Nie udało się przypisać przepustki: ${error.message}`);
+            throw new AppError(`Nie udało się przypisać przepustki.`, error);
         }
     }
 
     public async removePass(client: Client): Promise<Client> {
         if (client.pass == null) {
-            throw new Error(`Klient ${client.name} ${client.surname}${client.alias ? ' (' + client.alias + ')' : ''} już nie posiadał przepustki.`);
+            throw new AppError(`Klient ${client.name} ${client.surname}${client.alias ? ' (' + client.alias + ')' : ''} już nie posiadał przepustki.`);
         }
 
         try {
             await this.passRepository.deletePass(client.pass)
             client.pass = null;
-            return await this.repository.save(client); 
+            return await this.repository.save(client);
         } catch (error) {
-            throw new Error(`Nie udało się usunąć przepustki: ${error.message}`);
+            throw new AppError(`Nie udało się usunąć przepustki.`, error);
         }
     }
 
@@ -210,7 +217,7 @@ export class ClientRepository {
         try {
             await this.repository.remove(client);
         } catch (error) {
-            throw new Error(`Nie udało się usunąć klienta: ${error.message}`);
+            throw new AppError(`Nie udało się usunąć klienta.`, error);
         }
     }
 }
