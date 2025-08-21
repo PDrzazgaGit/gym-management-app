@@ -18,7 +18,7 @@ interface TrainingListProps {
 
 export const TrainingList: React.FC<TrainingListProps> = ({ pass, maxHeight, refreshKey, onSave }) => {
   const trainingManager = TrainingSessionManager.getInstance();
-  const {training} = useTraining();
+  const { training } = useTraining();
   const [trainingSessions, setTrainingSessions] = useState<TrainingSession[]>();
   const [trainingDay, setTrainingDay] = useState<Date | null>(new Date());
   const [trainingDayString, setTrainingDayString] = useState(DateFormatter.formatToDateOnly(new Date()));
@@ -57,139 +57,142 @@ export const TrainingList: React.FC<TrainingListProps> = ({ pass, maxHeight, ref
 
   const isToday = (trainingDate?: Date): boolean => {
     const today = new Date();
-    if(!trainingDate) return false;
+    if (!trainingDate) return false;
     return (
       trainingDate.getFullYear() === today.getFullYear() &&
       trainingDate.getMonth() === today.getMonth() &&
       trainingDate.getDate() === today.getDate()
     );
-}
+  }
 
   const getTableTitle = () => {
-      switch (trainingsDayFilter) {
-        case TrainingsDayFilter.GETALL:
-          return trainingDay
-            ? `Wszystkie treningi od dnia ${trainingDayString}`
-            : "Wszystkie treningi";
-        case TrainingsDayFilter.GETBYDAY:
-          return isToday(trainingDay)
-            ? "Dzisiejsze treningi"
-            : `Treningi z dnia ${trainingDayString}`;
-        case TrainingsDayFilter.GETBYWEEK:
-          return `Wszystkie z tygodnia dla dnia ${trainingDayString}`;
-      }
-    };
+    switch (trainingsDayFilter) {
+      case TrainingsDayFilter.GETALL:
+        return trainingDay
+          ? `Wszystkie treningi od dnia ${trainingDayString}`
+          : "Wszystkie treningi";
+      case TrainingsDayFilter.GETBYDAY:
+        return isToday(trainingDay)
+          ? "Dzisiejsze treningi"
+          : `Treningi z dnia ${trainingDayString}`;
+      case TrainingsDayFilter.GETBYWEEK:
+        return `Wszystkie z tygodnia dla dnia ${trainingDayString}`;
+    }
+  };
 
   return (
-    <Card className="mb-3 shadow-sm">
-        <Card.Body>
-        <Card.Title className="text-muted">Filtr treningów</Card.Title>
-          <Form.Group className="mb-2">
-            <InputGroup className="flex-wrap">
-              {Object.entries(searchFilters).map(([key, value]) => (
-                <Form.Check
-                  key={key}
-                  inline
-                  label={
-                    key === "clientCancel"
-                      ? "Odwołane (klient)"
-                      : key === "ownerCancel"
+    <Card className="mb-3 shadow-sm border-0">
+      <Card.Header className="bg-primary text-white border-0">
+        <Card.Title>Filtr treningów</Card.Title>
+      </Card.Header>
+      <Card.Body>
+        <Form.Group className="mb-2">
+          <InputGroup className="flex-wrap">
+            {Object.entries(searchFilters).map(([key, value]) => (
+              <Form.Check
+                key={key}
+                inline
+                label={
+                  key === "clientCancel"
+                    ? "Odwołane (klient)"
+                    : key === "ownerCancel"
                       ? "Odwołane"
                       : key.charAt(0).toUpperCase() + key.slice(1)
-                  }
-                  checked={value}
-                  onChange={(e) =>
-                    setSearchFilters((prev) => ({ ...prev, [key]: e.target.checked }))
-                  }
-                  className="me-2"
-                  id={`check_${key}`}
-                />
-              ))}
-            </InputGroup>
-          </Form.Group>
-          <Form.Group className="mb-2">
-            <InputGroup>
-              <Dropdown>
-                <Dropdown.Toggle variant="outline-primary">
-                  {trainingsDayFilter === TrainingsDayFilter.GETBYDAY && isToday(trainingDay)
-                    ? "Dzisiaj"
-                    : trainingsDayFilter}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => setTrainingsDayFilter(TrainingsDayFilter.GETALL)}>
-                    {TrainingsDayFilter.GETALL}
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    onClick={() => setTrainingsDayFilter(TrainingsDayFilter.GETBYDAY)}
-                  >
-                    {TrainingsDayFilter.GETBYDAY}
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    onClick={() => setTrainingsDayFilter(TrainingsDayFilter.GETBYWEEK)}
-                  >
-                    {TrainingsDayFilter.GETBYWEEK}
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-              <Form.Control
-                type="date"
-                value={trainingDayString}
-                onChange={(e) => {
-                  setTrainingDayString(e.target.value);
-                  setTrainingDay(e.target.value ? new Date(`${e.target.value}`) : null);
-                }}
+                }
+                checked={value}
+                onChange={(e) =>
+                  setSearchFilters((prev) => ({ ...prev, [key]: e.target.checked }))
+                }
+                className="me-2"
+                id={`check_${key}`}
               />
-              <Button variant="outline-danger" onClick={handleClearDate}>
-                Wyczyść
-              </Button>
-            </InputGroup>
-          </Form.Group>
-        </Card.Body>
-        <Card.Body>
-            <Card.Title className="text-muted">{getTableTitle()}</Card.Title>
+            ))}
+          </InputGroup>
+        </Form.Group>
+        <Form.Group className="mb-2">
+          <InputGroup>
+            <Dropdown>
+              <Dropdown.Toggle variant="outline-primary">
+                {trainingsDayFilter === TrainingsDayFilter.GETBYDAY && isToday(trainingDay)
+                  ? "Dzisiaj"
+                  : trainingsDayFilter}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => setTrainingsDayFilter(TrainingsDayFilter.GETALL)}>
+                  {TrainingsDayFilter.GETALL}
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => setTrainingsDayFilter(TrainingsDayFilter.GETBYDAY)}
+                >
+                  {TrainingsDayFilter.GETBYDAY}
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => setTrainingsDayFilter(TrainingsDayFilter.GETBYWEEK)}
+                >
+                  {TrainingsDayFilter.GETBYWEEK}
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+            <Form.Control
+              type="date"
+              value={trainingDayString}
+              onChange={(e) => {
+                setTrainingDayString(e.target.value);
+                setTrainingDay(e.target.value ? new Date(`${e.target.value}`) : null);
+              }}
+            />
+            <Button variant="outline-danger" onClick={handleClearDate}>
+              Wyczyść
+            </Button>
+          </InputGroup>
+        </Form.Group>
+        <Form.Group className="mt-4 mb-2">
+          <Card.Title>{getTableTitle()}</Card.Title>
+        </Form.Group>
+        <Form.Group className="mb-2">
           <div style={{ maxHeight: maxHeight ?? '65vh', overflowY: "auto" }}>
-            <Table hover responsive>
-              <thead className="table-light">
-                <tr>
-                  <th>LP.</th>
-                  {!pass && (<th>Klient</th>)}
-                  <th>Status</th>
-                  <th>Data planowana</th>
-                  <th>Opis</th>
-                </tr>
-              </thead>
-              <tbody>
-                {trainingSessions?.map((session, index) => (
-                  <TrainingSessionSettingsModal
-                    showClient = {!pass}
-                    key={session.id}
-                    trainingSession={session}
-                    onSave={() => {
-                      setRefreshTrainings((prev) => prev + 1);
-                      onSave?.();
-                    }}
-                  >
-                    <tr>
-                      <td>{index + 1}</td>
-                      {!pass && (<td>
-                        {`${session.pass.client.name} ${session.pass.client.surname}${
-                          session.pass.client.alias ? ` (${session.pass.client.alias})` : ""
+          <Table hover responsive>
+            <thead className="table-light">
+              <tr>
+                <th>LP.</th>
+                {!pass && (<th>Klient</th>)}
+                <th>Status</th>
+                <th>Data planowana</th>
+                <th>Opis</th>
+              </tr>
+            </thead>
+            <tbody>
+              {trainingSessions?.map((session, index) => (
+                <TrainingSessionSettingsModal
+                  showClient={!pass}
+                  key={session.id}
+                  trainingSession={session}
+                  onSave={() => {
+                    setRefreshTrainings((prev) => prev + 1);
+                    onSave?.();
+                  }}
+                >
+                  <tr>
+                    <td>{index + 1}</td>
+                    {!pass && (<td>
+                      {`${session.pass.client.name} ${session.pass.client.surname}${session.pass.client.alias ? ` (${session.pass.client.alias})` : ""
                         }`}
-                      </td>)}
-                      <td>{session.status}</td>
-                      <td>
-                        {session.plannedAt
-                          ? DateFormatter.formatToDateWithHours(session.plannedAt)
-                          : "Brak danych"}
-                      </td>
-                      <td>{session.description}</td>
-                    </tr>
-                  </TrainingSessionSettingsModal>
-                ))}
-              </tbody>
-            </Table>
-          </div>
-        </Card.Body>
-      </Card>
+                    </td>)}
+                    <td>{session.status}</td>
+                    <td>
+                      {session.plannedAt
+                        ? DateFormatter.formatToDateWithHours(session.plannedAt)
+                        : "Brak danych"}
+                    </td>
+                    <td>{session.description}</td>
+                  </tr>
+                </TrainingSessionSettingsModal>
+              ))}
+            </tbody>
+          </Table>
+        </div>
+        </Form.Group>
+      </Card.Body>
+    </Card>
   );
 };

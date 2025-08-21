@@ -78,7 +78,11 @@ declare global {
       };
       other: {
         openFolder(folderName: "db" | "log" | "config"): Promise<void>;
-      }
+      };
+      backup: {
+        create(): Promise<string | null>;  // zwraca ścieżkę zapisanego backupu lub null jeśli anulowano
+        restore(): Promise<string | null>; // zwraca ścieżkę wgranego backupu lub null jeśli anulowano
+      };
     };
   }
 }

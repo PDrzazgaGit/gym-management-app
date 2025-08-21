@@ -6,7 +6,6 @@ import { TrainingSession } from "../../main/entities/TrainingSession";
 import { DateFormatter } from "../ui-services/DateFormatter";
 import { TrainingsDayFilter } from "../../main/enums/TrainingsDayFilter";
 import { Pass } from "../../main/entities/Pass";
-import { StyledButton } from "./StyledButton";
 import { useNavigate } from "react-router-dom";
 import { useTraining } from "../hooks/useTraining";
 
@@ -105,6 +104,7 @@ export const StartListModal: React.FC<StartListProps> = ({ pass, maxHeight, refr
       backdrop="static"
       keyboard={false}
       contentClassName="shadow rounded-3"
+      animation
     >
       <Modal.Header
         closeButton
@@ -190,9 +190,9 @@ export const StartListModal: React.FC<StartListProps> = ({ pass, maxHeight, refr
         </Form.Group>
       </Modal.Body>
       <Modal.Footer className="border-0">
-        <StyledButton variant="outline-secondary" onClick={handleClose}>
+        <Button variant="outline-secondary" onClick={handleClose}>
           Zamknij
-        </StyledButton>
+        </Button>
       </Modal.Footer>
     </Modal>
   );

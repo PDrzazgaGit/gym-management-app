@@ -122,7 +122,10 @@ contextBridge.exposeInMainWorld("api", {
     openFolder: (folderName: "db" | "log" | "config"): Promise<void> =>
       invoke("other:open-folder", folderName),
   },
-
+  backup: {
+    create: (): Promise<string | null> => invoke("backup:create"),
+    restore: (): Promise<string | null> => invoke("backup:restore"),
+  },
   acrManager: {
     isAvailable: async (): Promise<boolean> => invoke("acr:is-available"),
 

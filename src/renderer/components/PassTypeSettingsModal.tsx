@@ -3,8 +3,8 @@ import {
     Modal,
     Form,
     Alert,
+    Button,
 } from "react-bootstrap";
-import { StyledButton } from "./StyledButton";
 import { PassType } from "../../main/entities/PassType";
 import { PassTypeManager } from "../ui-services/PassTypeManager";
 
@@ -75,6 +75,7 @@ export const PassTypeSettingsModal: React.FC<ModalContextType> = ({
                 backdrop="static"
                 keyboard={false}
                 contentClassName="shadow rounded-3"
+                animation
             >
                 <Modal.Header
                     closeButton
@@ -125,19 +126,19 @@ export const PassTypeSettingsModal: React.FC<ModalContextType> = ({
                         <Form.Group>
                             {confirmDeletePass ? (
                                 <div className="d-flex gap-2">
-                                    <StyledButton variant="danger" onClick={handleDeletePassType} className="me-2">
+                                    <Button variant="danger" onClick={handleDeletePassType} className="me-2">
                                         Potwierdź usunięcie
-                                    </StyledButton>
-                                    <StyledButton variant="outline-secondary" onClick={() => setConfirmDeletePass(false)}>
+                                    </Button>
+                                    <Button variant="outline-secondary" onClick={() => setConfirmDeletePass(false)}>
                                         Anuluj
-                                    </StyledButton>
+                                    </Button>
                                 </div>
 
 
                             ) : (
-                                <StyledButton variant="outline-danger" onClick={() => setConfirmDeletePass(true)} className="me-2">
+                                <Button variant="outline-danger" onClick={() => setConfirmDeletePass(true)} className="me-2">
                                     Usuń karnet
-                                </StyledButton>
+                                </Button>
                             )}
                         </Form.Group>
                     </Form>
@@ -154,12 +155,12 @@ export const PassTypeSettingsModal: React.FC<ModalContextType> = ({
                     )}
                 </Modal.Body>
                 <Modal.Footer className="border-0">
-                    <StyledButton variant="outline-secondary" onClick={handleClose}>
+                    <Button variant="outline-secondary" onClick={handleClose}>
                         Zamknij
-                    </StyledButton>
-                    <StyledButton variant="success" onClick={handleSave}>
+                    </Button>
+                    <Button variant="success" onClick={handleSave}>
                         Zapisz zmiany
-                    </StyledButton>
+                    </Button>
                 </Modal.Footer>
             </Modal>
 

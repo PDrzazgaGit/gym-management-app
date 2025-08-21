@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Container, Row, Col, InputGroup,
-  ListGroup, Dropdown, Table, Form, FormCheck, Card, Modal
+  ListGroup, Dropdown, Table, Form, FormCheck, Card, Modal,
+  Button
 } from "react-bootstrap";
-import { StyledButton } from "../StyledButton";
 import { useClient } from "../../../renderer/hooks/useClient";
 import { ValidationService } from "../../ui-services/ValidationService";
 import { ClientManager } from "../../../renderer/ui-services/ClientManager";
@@ -17,6 +17,7 @@ import { AssignCardToPassModal } from "../AssignCardToPassModal";
 import { AcrProvider } from "../../../renderer/react-context/AcrProvider";
 import { CardData } from "../../../main/data/CardData";
 import { Client } from "../../../main/entities/Client";
+import { PoppingModal } from "../PoppingModal";
 
 export const ClientPage = () => {
   const { client, setClient } = useClient();
@@ -81,14 +82,14 @@ export const ClientPage = () => {
       const updatedClient = await clientManager.modify(client?.id, name, surname, phone, alias);
       if (selectedPassType) {
 
-        if(client.pass && client.pass.entryLeft === 0){
+        if (client.pass && client.pass.entryLeft === 0) {
           const extendedPass = await passManager.extend(client.pass.id, selectedPassType.id);
           const updated: Client = await clientManager.getByPass(extendedPass.id);
           setClient(updated);
-        }else{
+        } else {
           const newPass = await passManager.add(selectedPassType.id);
           const updated: Client = await clientManager.assignPass(client.id, newPass.id);
-           setClient(updated);
+          setClient(updated);
         }
 
         setSelectedPassType(null);
@@ -142,42 +143,29 @@ export const ClientPage = () => {
       {/* Nagłówek strony */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="fw-bold text-primary fs-2 m-0">
-          {client?.name} {client?.surname}{" "}
+          {client?.name}{" "}{client?.surname}{" "}
           {client?.alias && <small className="text-muted">({client.alias})</small>}
         </h2>
         <div className="d-flex gap-2">
-          <StyledButton variant="secondary" onClick={() => navigate("/clients")}>
+          <Button variant="secondary" onClick={() => navigate("/clients")}>
             Powrót
-          </StyledButton>
-          <StyledButton variant="success" onClick={handleSave}>
+          </Button>
+          <Button variant="success" onClick={handleSave}>
             Zapisz zmiany
-          </StyledButton>
+          </Button>
         </div>
       </div>
 
-      {/* Modal błędów */}
-      <Modal
+      <PoppingModal
         show={showErrorModal}
-        onHide={() => { setShowErrorModal(false); setMessage(null); }}
-        centered
-        animation
-      >
-        <Modal.Header closeButton>
-          <Modal.Title className="text-danger">Błąd</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {message}
-        </Modal.Body>
-        <Modal.Footer>
-          <StyledButton variant="secondary" onClick={() => { setShowErrorModal(false); setMessage(null); }}>
-            Zamknij
-          </StyledButton>
-        </Modal.Footer>
-      </Modal>
+        setShow={setShowErrorModal}
+        setMessage={setMessage}
+        message={message}
+      />
 
       <Row>
         <Col md={6}>
-          <Card className="mb-3 shadow-sm">
+          <Card className="mb-3 shadow-sm border-0">
             <Card.Body>
               <Card.Title className="text-muted">Dane klienta</Card.Title>
               <Form.Group className="mb-2">
@@ -214,24 +202,24 @@ export const ClientPage = () => {
               </Form.Group>
               {confirmDeleteClient ? (
                 <div className="d-flex gap-2">
-                  <StyledButton variant="danger" onClick={handleDeleteClient}>
+                  <Button variant="danger" onClick={handleDeleteClient}>
                     Potwierdź usunięcie
-                  </StyledButton>
-                  <StyledButton variant="outline-secondary" onClick={() => setConfirmDeleteClient(false)}>
+                  </Button>
+                  <Button variant="outline-secondary" onClick={() => setConfirmDeleteClient(false)}>
                     Anuluj
-                  </StyledButton>
+                  </Button>
                 </div>
               ) : (
-                <StyledButton variant="outline-danger" onClick={() => setConfirmDeleteClient(true)}>
+                <Button variant="outline-danger" onClick={() => setConfirmDeleteClient(true)}>
                   Usuń klienta
-                </StyledButton>
+                </Button>
               )}
             </Card.Body>
           </Card>
         </Col>
 
         <Col md={6}>
-          <Card className="mb-3 shadow-sm">
+          <Card className="mb-3 shadow-sm border-0">
             <Card.Body>
               <Card.Title className="text-muted">Karnet</Card.Title>
               {client?.pass ? (
@@ -270,17 +258,20 @@ export const ClientPage = () => {
                     )}
                   {confirmRemovePass ? (
                     <div className="d-flex gap-2 ">
-                      <StyledButton variant="danger" onClick={handleRemovePass}>
+                      <Button variant="danger" onClick={handleRemovePass}>
                         Potwierdź usunięcie
-                      </StyledButton>
-                      <StyledButton variant="outline-secondary" onClick={() => setConfirmRemovePass(false)}>
+                      </Button>
+                      <Button variant="outline-secondary" onClick={() => setConfirmRemovePass(false)}>
                         Anuluj
-                      </StyledButton>
+                      </Button>
                     </div>
                   ) : (
-                    <StyledButton variant="outline-danger" onClick={() => setConfirmRemovePass(true)}>
-                      Usuń karnet
-                    </StyledButton>
+                    <div className="d-flex">
+                      <Button variant="outline-danger" onClick={() => setConfirmRemovePass(true)}>
+                        Usuń karnet
+                      </Button>
+
+                    </div>
 
                   )}
                 </>
@@ -311,7 +302,7 @@ export const ClientPage = () => {
 
 
           <Col md={4}>
-            <Card className="mb-3 shadow-sm">
+            <Card className="mb-3 shadow-sm border-0">
               <Card.Body>
                 <Card.Title className="text-muted">Nowy trening</Card.Title>
                 <Form.Group className="mb-2">
@@ -339,14 +330,14 @@ export const ClientPage = () => {
                     updatePlannedDate(plannedDateString, e.target.value);
                   }} disabled={!plannedDateString} />
                 </Form.Group>
-                <StyledButton variant="primary" onClick={handleAddTraining} disabled={plannedDateString && !plannedHourString}>
+                <Button variant="primary" onClick={handleAddTraining} disabled={plannedDateString && !plannedHourString}>
                   {plannedDateString ? "Zaplanuj trening" : "Zaplanuj trening bez daty"}
-                </StyledButton>
+                </Button>
               </Card.Body>
             </Card>
           </Col>
           <Col md={8}>
-            <TrainingList pass={client?.pass} maxHeight="20vh" refreshKey={refreshTrainings} onSave={handleSave}/>
+            <TrainingList pass={client?.pass} maxHeight="20vh" refreshKey={refreshTrainings} onSave={handleSave} />
           </Col>
         </Row>
       )}

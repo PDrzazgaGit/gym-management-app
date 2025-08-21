@@ -17,8 +17,6 @@ export const App = () => {
 
                     </TrainingProvider>
                 </AcrProvider>
-
-
             </div>
 
         </div>

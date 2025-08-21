@@ -7,6 +7,7 @@ import { TrainingSession } from "../entities/TrainingSession"
 import { app } from "electron";
 import path from "path";
 import fs from "fs";
+import { LoggerService } from "../services/LoggerService"
 
 // Ścieżka do podkatalogu w userData
 const userDataPath = app.getPath("userData");
@@ -29,3 +30,25 @@ export const AppDataSource = new DataSource({
     migrations: [],
     subscribers: [],
 })
+
+const originalDestroy = AppDataSource.destroy.bind(AppDataSource);
+
+AppDataSource.destroy = async function () {
+    LoggerService.info('Closing database...');
+    
+    await originalDestroy();
+    
+    LoggerService.info('Database closed');
+};
+
+const originalInitialize = AppDataSource.initialize.bind(AppDataSource);
+
+AppDataSource.initialize = async function () {
+    LoggerService.info('Initializing database...');
+
+    const ds = await originalInitialize();
+    
+    LoggerService.info('Database initialized');
+
+    return ds;
+};

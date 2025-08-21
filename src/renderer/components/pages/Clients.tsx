@@ -12,13 +12,13 @@ import {
   Container,
   Form,
 } from "react-bootstrap";
-import { StyledButton } from "../StyledButton";
 import { Search } from "react-bootstrap-icons";
 import { Client } from "../../../main/entities/Client";
 import { ClientManager } from "../../ui-services/ClientManager";
 import { useClient } from "../../../renderer/hooks/useClient";
 import { useNavigate } from "react-router-dom";
 import { ValidationService } from "../../../renderer/ui-services/ValidationService";
+import { PoppingModal } from "../PoppingModal";
 
 export const Clients = () => {
   const navigate = useNavigate();
@@ -127,13 +127,16 @@ export const Clients = () => {
       <Row>
         <Col>
           {/* Karta z formularzem dodawania klienta */}
-          <Card className="mb-3 shadow-sm">
+          <Card className="mb-3 shadow-sm border-0">
+            <Card.Header className="bg-primary text-white border-0">
+              <Card.Title>Dodaj klienta</Card.Title>
+            </Card.Header>
             <Card.Body>
-              <Card.Title className="text-muted">Dodaj klienta</Card.Title>
+
               <Form.Group className="mb-2">
                 <Form.Label>Imię</Form.Label>
                 <Form.Control
-                placeholder="Wpisz imię"
+                  placeholder="Wpisz imię"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   autoFocus
@@ -143,16 +146,16 @@ export const Clients = () => {
               <Form.Group className="mb-2">
                 <Form.Label>Nazwisko</Form.Label>
                 <Form.Control
-                placeholder="Wpisz nazwisko"
+                  placeholder="Wpisz nazwisko"
                   value={surname}
                   onChange={(e) => setSurname(e.target.value)}
                   type="text"
                 />
               </Form.Group>
-              <Form.Group className="mb-2">
+              <Form.Group className={showAlias ? "mb-2" : ''}>
                 <Form.Label>Telefon</Form.Label>
                 <Form.Control
-                placeholder="Wpisz telefon (opcjonalnie)"
+                  placeholder="Wpisz telefon (opcjonalnie)"
                   value={phone}
                   onChange={(e) => {
                     const phone = ValidationService.typingPhone(e.target.value);
@@ -162,28 +165,33 @@ export const Clients = () => {
                 />
               </Form.Group>
               {showAlias && (
-                <Form.Group className="mb-2">
+                <Form.Group>
                   <Form.Label>Alias</Form.Label>
                   <Form.Control
                     value={alias}
                     onChange={(e) => setAlias(e.target.value)}
                     type="text"
-                      placeholder="Wpisz alias"
+                    placeholder="Wpisz alias"
                   />
                 </Form.Group>
               )}
-              <StyledButton variant="outline-success" onClick={handleAddClient}>
-                Dodaj klienta
-              </StyledButton>
+
             </Card.Body>
+            <Card.Footer className="border-0 bg-white">
+              <Button variant="outline-success" onClick={handleAddClient}>
+                Dodaj klienta
+              </Button>
+            </Card.Footer>
           </Card>
         </Col>
         <Col>
           {/* Karta wyszukiwania klientów */}
-          <Card className="mb-3 shadow-sm">
+          <Card className="mb-3 shadow-sm border-0">
+            <Card.Header className="bg-primary text-white border-0">
+              <Card.Title>Znajdź osobę</Card.Title>
+            </Card.Header>
             <Card.Body>
-              <Card.Title className="text-muted mb-2">Znajdź osobę</Card.Title>
-              <Form.Group className="mb-2">
+              <Form.Group>
                 <InputGroup>
                   <Form.Control
                     type="search"
@@ -191,53 +199,57 @@ export const Clients = () => {
                     value={search}
                     placeholder="Wpisz szukaną frazę..."
                   />
-                  <Button variant="gym" className="border"onClick={handleSearch}>
+                  <Button variant="outline-success"  onClick={handleSearch}>
                     <Search />
                   </Button>
                 </InputGroup>
               </Form.Group>
+            </Card.Body>
+            <Card.Footer className="border-0 bg-white">
               <InputGroup className="flex-wrap">
                 <Form.Check
-                    id="imie_check"
-                    label="Imię"
-                    checked={searchByName}
-                    onChange={(e) => setSearchByName(e.target.checked)}
-                    disabled={disabled}
-                    className="me-2"
-                  />
-                  <Form.Check
-                    id="nazwisko_check"
-                    label="Nazwisko"
-                    checked={searchBySurname}
-                    onChange={(e) => setSearchBySurname(e.target.checked)}
-                    className="me-2"
-                  />
-                  <Form.Check
-                    id="telefon_check"
-                    label="Telefon"
-                    checked={searchByPhone}
-                    onChange={(e) => setSearchByPhone(e.target.checked)}
-                    className="me-2"
-                  />
-                  <Form.Check
-                    id="pass_check"
-                    label="Karnet"
-                    checked={searchByPass}
-                    onChange={(e) => setSearchByPass(e.target.checked)}
-                    className="me-2"
-                  />
-                </InputGroup>
-
-            </Card.Body>
+                  id="imie_check"
+                  label="Imię"
+                  checked={searchByName}
+                  onChange={(e) => setSearchByName(e.target.checked)}
+                  disabled={disabled}
+                  className="me-2"
+                />
+                <Form.Check
+                  id="nazwisko_check"
+                  label="Nazwisko"
+                  checked={searchBySurname}
+                  onChange={(e) => setSearchBySurname(e.target.checked)}
+                  className="me-2"
+                />
+                <Form.Check
+                  id="telefon_check"
+                  label="Telefon"
+                  checked={searchByPhone}
+                  onChange={(e) => setSearchByPhone(e.target.checked)}
+                  className="me-2"
+                />
+                <Form.Check
+                  id="pass_check"
+                  label="Karnet"
+                  checked={searchByPass}
+                  onChange={(e) => setSearchByPass(e.target.checked)}
+                  className="me-2"
+                />
+              </InputGroup>
+            </Card.Footer>
           </Card>
         </Col>
       </Row>
 
 
       {/* Karta z tabelą klientów */}
-      <Card className="mb-3 shadow-sm" style={{ maxHeight: "40vh", overflowY: "auto" }}>
+      <Card className="mb-3 shadow-sm border-0" style={{ maxHeight: "40vh", overflowY: "auto" }}>
+        <Card.Header className="bg-primary text-white border-0">
+              <Card.Title>Lista klientów</Card.Title>
+            </Card.Header>
         <Card.Body>
-          <Table hover responsive className="mx-0 mb-0">
+          <Table hover responsive>
             <thead className="table-light">
               <tr>
                 <th className="text-muted">LP.</th>
@@ -273,33 +285,12 @@ export const Clients = () => {
         </Card.Body>
       </Card>
 
-
-
-      {/* Modal do wyświetlania błędów */}
-      <Modal
+      <PoppingModal
         show={showErrorModal}
-        onHide={() => {
-          setShowErrorModal(false);
-          setMessage(null);
-        }}
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title className="text-danger">Błąd</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{message}</Modal.Body>
-        <Modal.Footer>
-          <StyledButton
-            variant="secondary"
-            onClick={() => {
-              setShowErrorModal(false);
-              setMessage(null);
-            }}
-          >
-            Zamknij
-          </StyledButton>
-        </Modal.Footer>
-      </Modal>
+        setShow={setShowErrorModal}
+        setMessage={setMessage}
+        message={message}
+      />
     </Container>
   );
 };

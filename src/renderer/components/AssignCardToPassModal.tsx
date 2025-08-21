@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import {
     Modal,
     Alert,
+    Button,
 } from "react-bootstrap";
-import { StyledButton } from "./StyledButton";
 import { useAcr } from "../hooks/useAcr";
 import { AnimatedCircle } from "./AnimatedCircle";
 import { Client } from "../../main/entities/Client";
@@ -32,20 +32,7 @@ export const AssignCardToPassModal: React.FC<ModalContextType> = ({
         setShow(false);
 
     };
-
-    /*
-    useEffect(()=>{      
-        if (!client?.pass?.id) return;
-        const fetchSaveUUID = async () =>{
-            await passManager.assignCard(client.pass?.id, cardData.uuid);
-        }
-        if(show && cardData){
-           
-            fetchSaveUUID();
-        }
-    }, [cardData])
-*/
-
+    
     useEffect(() => {
         if (!client?.pass?.id) return;
         setMode("write");
@@ -75,6 +62,7 @@ export const AssignCardToPassModal: React.FC<ModalContextType> = ({
                 backdrop="static"
                 keyboard={false}
                 contentClassName="shadow rounded-3"
+                animation
             >
                 <Modal.Header
                     closeButton
@@ -87,7 +75,7 @@ export const AssignCardToPassModal: React.FC<ModalContextType> = ({
                 <Modal.Body>
                     <AnimatedCircle
                         deviceConnected={isReaderConnected}
-                        dataReady={cardData ? true : false}
+                        dataReady={cardData &&!error ? true : false}
                         cardInserted={isCardPresent}
                     />
                     {error && (
@@ -102,15 +90,15 @@ export const AssignCardToPassModal: React.FC<ModalContextType> = ({
                     )}
                 </Modal.Body>
                 <Modal.Footer className="border-0">
-                    <StyledButton variant="outline-secondary" onClick={handleClose}>
+                    <Button variant="outline-secondary" onClick={handleClose}>
                         Zamknij
-                    </StyledButton>
+                    </Button>
                 </Modal.Footer>
             </Modal>
 
-            <StyledButton className={className} variant="outline-primary" onClick={() => setShow(true)}>
+            <Button className={className} variant="outline-primary" onClick={() => setShow(true)}>
                 Przypisz kartę
-            </StyledButton>
+            </Button>
         </>
     );
 };

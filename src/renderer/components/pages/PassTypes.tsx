@@ -13,8 +13,8 @@ import {
 } from "react-bootstrap";
 import { PassTypeManager } from "../../../renderer/ui-services/PassTypeManager";
 import { PassType } from "../../../main/entities/PassType";
-import { StyledButton } from "../StyledButton";
 import { PassTypeSettingsModal } from "../PassTypeSettingsModal";
+import { PoppingModal } from "../PoppingModal";
 
 export const PassTypes = () => {
   const passTypeManager = PassTypeManager.getInstance();
@@ -67,9 +67,12 @@ export const PassTypes = () => {
       <h2 className="mb-4 text-primary fw-bold">Dostępne karnety</h2>
       <Row style={{ height: "100%" }}>
         <Col md={7} style={{ overflowY: "auto", maxHeight: "65vh" }}>
-          <Card className="shadow-sm">
+          <Card className="shadow-sm mb-3 border-0">
+            <Card.Header className="bg-primary text-white border-0">
+              <Card.Title>Lista karnetów</Card.Title>
+            </Card.Header>
             <Card.Body>
-              <Table responsive hover className="mb-0">
+              <Table responsive hover>
                 <thead className="table-light">
                   <tr>
                     <th className="text-muted">LP.</th>
@@ -96,13 +99,14 @@ export const PassTypes = () => {
             </Card.Body>
           </Card>
         </Col>
-
         <Col md={5}>
-          <Card className="shadow-sm">
+          <Card className="shadow-sm mb-3 border-0">
+            <Card.Header className="bg-primary text-white border-0">
+                          <Card.Title>Nowy karnet</Card.Title>
+                        </Card.Header>
             <Card.Body>
-              <Card.Title className="text-muted mb-3">Dodaj nowy karnet</Card.Title>
               <Form>
-                <Form.Group className="mb-3" controlId="passName">
+                <Form.Group className="mb-2" controlId="passName">
                   <Form.Label>Nazwa</Form.Label>
                   <Form.Control
                     type="text"
@@ -113,7 +117,7 @@ export const PassTypes = () => {
                   />
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="passDescription">
+                <Form.Group className="mb-2" controlId="passDescription">
                   <Form.Label>Opis</Form.Label>
                   <Form.Control
                     as="textarea"
@@ -125,7 +129,7 @@ export const PassTypes = () => {
                   />
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="passEntries">
+                <Form.Group className="mb-2" controlId="passEntries">
                   <Form.Label>Wejścia</Form.Label>
                   <Form.Control
                     type="number"
@@ -149,31 +153,12 @@ export const PassTypes = () => {
           </Card>
         </Col>
       </Row>
-      {/* Modal do wyświetlania błędów */}
-      <Modal
+      <PoppingModal
         show={showErrorModal}
-        onHide={() => {
-          setShowErrorModal(false);
-          setMessage(null);
-        }}
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title className="text-danger">Błąd</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{message}</Modal.Body>
-        <Modal.Footer>
-          <StyledButton
-            variant="secondary"
-            onClick={() => {
-              setShowErrorModal(false);
-              setMessage(null);
-            }}
-          >
-            Zamknij
-          </StyledButton>
-        </Modal.Footer>
-      </Modal>
+        setShow={setShowErrorModal}
+        setMessage={setMessage}
+        message={message}
+      />
     </Container>
   );
 };

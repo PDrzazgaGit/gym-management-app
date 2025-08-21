@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, FormControl, InputGroup, ListGroup, Modal } from "react-bootstrap";
-import { StyledButton } from "./StyledButton";
+import { Button, Form, FormControl, InputGroup, ListGroup, Modal } from "react-bootstrap";
 import { TrainingSession } from "../../main/entities/TrainingSession";
 import { TrainingSessionManager } from "../ui-services/TrainingSessionManager";
 import { DateFormatter } from "../ui-services/DateFormatter";
@@ -128,7 +127,16 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
 
     return (
         <>
-            <Modal show={show} onHide={handleClose} size="lg">
+            <Modal
+                show={show}
+                onHide={handleClose}
+                size="lg"
+                centered
+                backdrop="static"
+                keyboard={false}
+                contentClassName="shadow rounded-3"
+                animation
+            >
                 <Modal.Header closeButton className="bg-primary text-white">
                     <Modal.Title>{`Szczegóły treningu`}</Modal.Title>
                 </Modal.Header>
@@ -210,26 +218,26 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
                         )}
 
 
-                        {trainingSession.status === TrainingSessionStatus.IN_PROGRESS && !confirmButton &&(
+                        {trainingSession.status === TrainingSessionStatus.IN_PROGRESS && !confirmButton && (
                             <ListGroup.Item className="border-0">
-                                <StyledButton
+                                <Button
                                     variant="outline-warning"
                                     onClick={() => setConfirmButton("endTraining")}
                                 >
                                     Zakończ trening
-                                </StyledButton>
+                                </Button>
                             </ListGroup.Item>
 
                         )}
 
-                        {trainingSession.status === TrainingSessionStatus.PLANNED && !confirmButton &&(
+                        {trainingSession.status === TrainingSessionStatus.PLANNED && !confirmButton && (
                             <ListGroup.Item className="border-0">
-                                <StyledButton
+                                <Button
                                     variant="outline-success"
                                     onClick={() => setConfirmButton("startTraining")}
                                 >
                                     Rozpocznij trening bez karty
-                                </StyledButton>
+                                </Button>
                             </ListGroup.Item>
 
                         )}
@@ -239,7 +247,7 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
                         {trainingSession.status === TrainingSessionStatus.PLANNED && !confirmButton && (
                             <>
                                 <ListGroup.Item className="border-0">
-                                    <StyledButton
+                                    <Button
                                         variant="outline-danger"
                                         onClick={() => {
                                             setConfirmButton("client");
@@ -247,10 +255,10 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
                                         }}
                                     >
                                         Klient odwołał trening
-                                    </StyledButton>
+                                    </Button>
                                 </ListGroup.Item>
                                 <ListGroup.Item className="border-0">
-                                    <StyledButton
+                                    <Button
                                         variant="outline-danger"
                                         onClick={() => {
                                             setConfirmButton("owner");
@@ -258,17 +266,17 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
                                         }}
                                     >
                                         Odwołaj trening
-                                    </StyledButton>
+                                    </Button>
                                 </ListGroup.Item>
                             </>
                         )}
 
                         {confirmButton && (
                             <ListGroup.Item className="border-0 d-flex gap-2">
-                                <StyledButton variant={confirmButton === "startTraining" ? "success" : "danger"} onClick={handleSave}>{ }
+                                <Button variant={confirmButton === "startTraining" ? "success" : "danger"} onClick={handleSave}>{ }
                                     {confirmButton === "endTraining" ? "Potwierdź zakończenie" : (confirmButton === "startTraining" ? "Potwierdź rozpoczęcie" : "Potwierdź odwołanie")}
-                                </StyledButton>
-                                <StyledButton
+                                </Button>
+                                <Button
                                     variant="outline-secondary"
                                     onClick={() => {
                                         setConfirmButton(null);
@@ -276,16 +284,16 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
                                     }}
                                 >
                                     Anuluj
-                                </StyledButton>
+                                </Button>
                             </ListGroup.Item>
                         )}
 
 
                         {showClient && (
                             <ListGroup.Item className="border-0">
-                                <StyledButton variant="outline-primary" onClick={handleRedirect}>
+                                <Button variant="outline-primary" onClick={handleRedirect}>
                                     Strona klienta
-                                </StyledButton>
+                                </Button>
                             </ListGroup.Item>
                         )}
 
@@ -297,14 +305,14 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
                     </ListGroup>
                 </Modal.Body>
                 <Modal.Footer>
-                    <StyledButton variant="outline-secondary" onClick={handleClose}>
+                    <Button variant="outline-secondary" onClick={handleClose}>
                         Anuluj
-                    </StyledButton>
+                    </Button>
                     {/* Pokaż przycisk "Zapisz zmiany" tylko, gdy nie czekamy na potwierdzenie odwołania */}
                     {!confirmButton && (
-                        <StyledButton variant="success" onClick={handleSave} disabled={plannedDateString && !plannedHourString}>
+                        <Button variant="success" onClick={handleSave} disabled={plannedDateString && !plannedHourString}>
                             Zapisz zmiany
-                        </StyledButton>
+                        </Button>
                     )}
                 </Modal.Footer>
             </Modal>
