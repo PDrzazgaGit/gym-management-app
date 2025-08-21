@@ -26,20 +26,20 @@ export const TrainingList: React.FC<TrainingListProps> = ({ pass, maxHeight, ref
   const [refreshTrainings, setRefreshTrainings] = useState(0);
   const [searchFilters, setSearchFilters] = useState({
     planned: false,
-    inProgress: false,
+    in_progress: false,
     completed: false,
-    ownerCancel: false,
-    clientCancel: false,
+    canceled_owner: false,
+    canceled_client: false,
   });
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await trainingManager.filter({
         planned: searchFilters.planned,
-        inprogress: searchFilters.inProgress,
+        inprogress: searchFilters.in_progress,
         completed: searchFilters.completed,
-        cancelClient: searchFilters.clientCancel,
-        cancelOwner: searchFilters.ownerCancel,
+        cancelClient: searchFilters.canceled_client,
+        cancelOwner: searchFilters.canceled_owner,
         day: trainingDay,
         trainingsDayFilter: trainingsDayFilter,
         passId: pass?.id,
@@ -91,11 +91,7 @@ export const TrainingList: React.FC<TrainingListProps> = ({ pass, maxHeight, ref
                   key={key}
                   inline
                   label={
-                    key === "clientCancel"
-                      ? "Odwołane (klient)"
-                      : key === "ownerCancel"
-                      ? "Odwołane"
-                      : key.charAt(0).toUpperCase() + key.slice(1)
+                    key 
                   }
                   checked={value}
                   onChange={(e) =>
