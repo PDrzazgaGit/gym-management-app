@@ -93,11 +93,7 @@ export const TrainingList: React.FC<TrainingListProps> = ({ pass, maxHeight, ref
                 key={key}
                 inline
                 label={
-                  key === "clientCancel"
-                    ? "Odwołane (klient)"
-                    : key === "ownerCancel"
-                      ? "Odwołane"
-                      : key.charAt(0).toUpperCase() + key.slice(1)
+                  key
                 }
                 checked={value}
                 onChange={(e) =>
