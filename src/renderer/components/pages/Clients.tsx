@@ -47,6 +47,23 @@ export const Clients = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
 
+  const [visibleCount, setVisibleCount] = useState(0);
+  const SPEED = 25;
+
+  useEffect(() => {
+    if (!clientList) return;
+
+    setVisibleCount(0); // reset
+    let i = 0;
+    const interval = setInterval(() => {
+      i++;
+      setVisibleCount(i);
+      if (i >= clientList.length) clearInterval(interval);
+    }, SPEED); // 10ms per row
+
+    return () => clearInterval(interval);
+  }, [clientList]);
+
   // Fetch wszystkich klientów (inicjalne i po odświeżeniu)
   useEffect(() => {
     if (!clientList) {
@@ -250,19 +267,19 @@ export const Clients = () => {
         </Card.Header>
         <Card.Body>
           <div style={{ maxHeight: "32vh", overflowY: "auto" }}>
-            <Table hover>
+            <Table hover style={{ tableLayout: "fixed", width: "100%" }}>
               <thead className="table-light" style={{ position: "sticky", top: 0, zIndex: 10, backgroundColor: "white" }}>
                 <tr>
-                  <th className="text-muted">LP.</th>
-                  <th className="text-muted">IMIĘ</th>
-                  <th className="text-muted">NAZWISKO (ALIAS)</th>
-                  <th className="text-muted">TELEFON</th>
-                  <th className="text-muted">KARNET</th>
+                  <th style={{ width: "10%" }} className="text-muted">LP.</th>
+                  <th style={{ width: "25%" }} className="text-muted">IMIĘ</th>
+                  <th style={{ width: "25%" }} className="text-muted">NAZWISKO (ALIAS)</th>
+                  <th style={{ width: "30%" }} className="text-muted">TELEFON</th>
+                  <th style={{ width: "20%" }} className="text-muted">KARNET</th>
                 </tr>
               </thead>
               <tbody>
                 {clientList &&
-                  clientList.map((clientData, index) => (
+                  clientList.slice(0, visibleCount).map((clientData, index) => (
                     <tr
                       key={clientData.id}
                       style={{ cursor: "pointer" }}

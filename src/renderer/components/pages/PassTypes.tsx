@@ -33,6 +33,25 @@ export const PassTypes = () => {
 
   const [refreshKey, setRefreshKey] = useState(0);
 
+    const SPEED = 25;
+
+
+  const [visibleCount, setVisibleCount] = useState(0); 
+
+  useEffect(() => {
+    if (!passTypes) return;
+
+    setVisibleCount(0); // reset
+    let i = 0;
+    const interval = setInterval(() => {
+      i++;
+      setVisibleCount(i);
+      if (i >= passTypes.length) clearInterval(interval);
+    }, SPEED); 
+
+    return () => clearInterval(interval);
+  }, [passTypes]);
+
   // Pobierz karnety
   useEffect(() => {
     if (!passTypes) {
@@ -132,21 +151,21 @@ export const PassTypes = () => {
             </Card.Header>
             <Card.Body>
               <div style={{ maxHeight: '74vh', overflowY: "auto" }}>
-                <Table hover>
+                <Table hover style={{ tableLayout: "fixed", width: "100%" }}>
                   <thead
                     className="table-light"
                     style={{ position: "sticky", top: 0, zIndex: 10, backgroundColor: "white" }}
                   >
                     <tr>
-                      <th className="text-muted">LP.</th>
-                      <th className="text-muted">NAZWA</th>
-                      <th className="text-muted">OPIS</th>
-                      <th className="text-muted">WEJŚCIA</th>
+                      <th style={{ width: "10%" }} className="text-muted">LP.</th>
+                      <th style={{ width: "20%" }} className="text-muted">NAZWA</th>
+                      <th style={{ width: "50%" }} className="text-muted">OPIS</th>
+                      <th style={{ width: "20%" }} className="text-muted">WEJŚCIA</th>
                     </tr>
                   </thead>
                   <tbody>
                     {passTypes &&
-                      passTypes.map((passTypeData, index) => (
+                      passTypes.slice(0, visibleCount).map((passTypeData, index) => (
                         <PassTypeSettingsModal
                           passType={passTypeData}
                           key={passTypeData.id}

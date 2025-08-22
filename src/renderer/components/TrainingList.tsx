@@ -32,6 +32,25 @@ export const TrainingList: React.FC<TrainingListProps> = ({ pass, maxHeight, ref
     canceled_client: false,
   });
 
+      const SPEED = 25;
+  
+  
+    const [visibleCount, setVisibleCount] = useState(0); 
+  
+    useEffect(() => {
+      if (!trainingSessions) return;
+  
+      setVisibleCount(0); // reset
+      let i = 0;
+      const interval = setInterval(() => {
+        i++;
+        setVisibleCount(i);
+        if (i >= trainingSessions.length) clearInterval(interval);
+      }, SPEED); 
+  
+      return () => clearInterval(interval);
+    }, [trainingSessions]);
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await trainingManager.filter({
@@ -144,18 +163,18 @@ export const TrainingList: React.FC<TrainingListProps> = ({ pass, maxHeight, ref
         </Form.Group>
         <Form.Group>
           <div style={{ maxHeight: maxHeight ?? '63vh', overflowY: "auto" }}>
-            <Table hover>
+            <Table hover style={{ tableLayout: "fixed", width: "100%" }}>
               <thead className="table-light" style={{ position: "sticky", top: 0, zIndex: 10, backgroundColor: "white" }}>
                 <tr>
-                  <th>LP.</th>
-                  {!pass && <th>Klient</th>}
-                  <th>Status</th>
-                  <th>Data planowana</th>
-                  <th>Opis</th>
+                  <th style={{ width: "10%" }}>LP.</th>
+                  {!pass && <th style={{ width: "10%" }}>Klient</th>}
+                  <th style={{ width: !pass ? "10%" : "15%" }}>Status</th>
+                  <th style={{ width: !pass ? "20%": "25%" }}>Data planowana</th>
+                  <th style={{ width: "40%" }}>Opis</th>
                 </tr>
               </thead>
               <tbody>
-                {trainingSessions?.map((session, index) => (
+                {trainingSessions?.slice(0, visibleCount).map((session, index) => (
                   <TrainingSessionSettingsModal
                     showClient={!pass}
                     key={session.id}

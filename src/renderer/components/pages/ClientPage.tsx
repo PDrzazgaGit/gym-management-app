@@ -196,16 +196,13 @@ export const ClientPage = () => {
                 </Col>
                 <Col md={12} lg={4} className="">
                   {client?.pass ? (
-                    <>
-                      <Row>
-                        <Col className="d-flex justify-content-center align-items-center">
-                          <Form.Group className="mt-3 mb-3">
-                            <Badge bg="gym" className="fs-3 text-black ">
+                    <Card className="shadow border-0">
+                      <Card.Header className="bg-gym border-0">
+<Card.Title className="text-black mb-0">
                               Karnet
-                            </Badge>
-                          </Form.Group>
-                        </Col>
-                      </Row>
+                            </Card.Title>
+                      </Card.Header>
+                      <Card.Body>
                       <Row>
                         <Col>
                           <Row className="mb-3">
@@ -292,8 +289,8 @@ export const ClientPage = () => {
                         </Col>
 
                       </Row>
-
-                    </>
+</Card.Body>
+                    </Card>
                   ) : (
                     <Dropdown className="mb-3">
                       <Dropdown.Toggle variant="warning" disabled={!passTypes?.length}>

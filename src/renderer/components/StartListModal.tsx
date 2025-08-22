@@ -31,6 +31,7 @@ export const StartListModal: React.FC<StartListProps> = ({ pass, maxHeight, refr
 
   const isToday = (trainingDate: Date): boolean => {
     const today = new Date();
+    if(!trainingDate) return false;
     return (
       trainingDate.getFullYear() === today.getFullYear() &&
       trainingDate.getMonth() === today.getMonth() &&
@@ -63,6 +64,25 @@ export const StartListModal: React.FC<StartListProps> = ({ pass, maxHeight, refr
     };
     fetchData();
   }, [trainingsDayFilter, trainingDay, pass, refreshKey]);
+
+    const SPEED = 25;
+    
+    
+      const [visibleCount, setVisibleCount] = useState(0); 
+    
+      useEffect(() => {
+        if (!trainingSessions) return;
+    
+        setVisibleCount(0); // reset
+        let i = 0;
+        const interval = setInterval(() => {
+          i++;
+          setVisibleCount(i);
+          if (i >= trainingSessions.length) clearInterval(interval);
+        }, SPEED); 
+    
+        return () => clearInterval(interval);
+      }, [trainingSessions]);
 
   const handleClearDate = () => {
     setTrainingDay(null);
@@ -155,20 +175,20 @@ export const StartListModal: React.FC<StartListProps> = ({ pass, maxHeight, refr
         <Form.Group className="mb-3">
           <Form.Label>{getTableTitle()}</Form.Label>
           <div style={{ maxHeight: maxHeight ?? '65vh', overflowY: "auto" }}>
-            <Table hover>
+            <Table hover style={{ tableLayout: "fixed", width: "100%" }}>
               <thead
                 className="table-light"
                 style={{ position: "sticky", top: 0, zIndex: 10, backgroundColor: "white" }}
               >
                 <tr>
-                  <th>LP.</th>
-                  <th>Status</th>
-                  <th>Data planowana</th>
-                  <th>Opis</th>
+                  <th style={{ width: "10%" }}>LP.</th>
+                  <th style={{ width: "15%" }}>Status</th>
+                  <th style={{ width: "25%" }}>Data planowana</th>
+                  <th style={{ width: "40%" }}>Opis</th>
                 </tr>
               </thead>
               <tbody>
-                {trainingSessions?.map((session, index) => (
+                {trainingSessions && trainingSessions.slice(0, visibleCount).map((session, index) => (
                   <tr
                     key={index}
                     style={{ cursor: "pointer" }}

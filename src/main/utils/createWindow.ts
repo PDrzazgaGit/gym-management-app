@@ -10,13 +10,15 @@ declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 export const createWindow = (app: Electron.App): BrowserWindow => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    height: 600,
-    width: 1000,
+    show: false, 
     autoHideMenuBar: true,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });
+
+  mainWindow.maximize();
+  mainWindow.show();
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);

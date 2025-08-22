@@ -32,14 +32,14 @@ export const PoppingModal: React.FC<ErrorModalProps> = ({ show, setShow, message
         >
             <Modal.Header 
             closeButton 
-            className={`${type === "error" ? "bg-danger" : "bg-primary"} border-0 text-white`}>
-                <Modal.Title >{title}</Modal.Title>
+            className={`${type === "error" ? "bg-danger" : "bg-black"} border-0 text-white`}>
+                <Modal.Title className='mb-0'>{title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 {message}
             </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+            <Modal.Footer className="border-0 p-1 bg-gym d-flex justify-content-end">
+                <Button variant="outline-black" onClick={handleClose}>
                     Zamknij
                 </Button>
             </Modal.Footer>

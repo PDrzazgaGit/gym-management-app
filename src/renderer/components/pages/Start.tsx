@@ -13,8 +13,8 @@ import { useNavigate } from "react-router-dom";
 import { PoppingModal } from "../PoppingModal";
 
 export const Start = () => {
-  const { training, setTraining, elapsedFormatted } = useTraining();
-  const { isReaderConnected, cardData, isCardPresent, acrError, setMode } = useAcr();
+  const { training, setTraining, elapsedFormatted,  } = useTraining();
+  const { isReaderConnected, cardData, isCardPresent, acrError, setMode, clearError } = useAcr();
   const trainingManager = TrainingSessionManager.getInstance();
   const passManager = PassManager.getInstance();
 
@@ -170,7 +170,7 @@ export const Start = () => {
                 {confirmButton && (
                   <ListGroup.Item className="border-0 d-flex gap-2">
                     <Button 
-                    variant="black"
+                    variant="danger"
                     onClick={() => {
                       setConfirmButton(false);
                       handleEndTraining();
@@ -197,8 +197,8 @@ export const Start = () => {
             </Card>
           </Col>
         )}
-        <Col lg={training ? 6 : null} className="d-flex align-items-center justify-content-center">
-          <Card className="mb-3 shadow border-0 bg-white " >
+        <Col lg={training ? 6 : null} className="d-flex align-items-center justify-content-center ">
+          <Card className="mb-3 shadow border-0 bg-black rounded-circle" >
             <Card.Body >
               <AnimatedCircle
                 deviceConnected={isReaderConnected}
@@ -243,6 +243,7 @@ export const Start = () => {
         setShow={setShowErrorModal}
         setMessage={setError}
         message={error}
+        onClose={()=>clearError()}
       />
     </Container>
   );
