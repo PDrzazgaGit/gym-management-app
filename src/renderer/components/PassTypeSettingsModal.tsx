@@ -70,23 +70,23 @@ export const PassTypeSettingsModal: React.FC<ModalContextType> = ({
             <Modal
                 show={show}
                 onHide={handleClose}
-                size="lg"
                 centered
                 backdrop="static"
                 keyboard={false}
                 contentClassName="shadow rounded-3"
                 animation
+                 size="lg"
             >
                 <Modal.Header
                     closeButton
-                    className="bg-primary text-white border-0"
+                    className="bg-black text-white border-0"
                 >
-                    <Modal.Title className="fw-semibold fs-5">
+                    <Modal.Title className="fw-semibold fs-5 mb-0">
                         Szczegóły karnetu &quot;{passType.name}&quot;
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <p className="text-muted mb-4" style={{ textAlign: "justify" }}>
+                    <p className="mb-3" style={{ textAlign: "justify" }}>
                         Modyfikacja danych karnetu. Zmiana liczby wejść dla danego rodzaju karnetu nie ma wpływu na
                         przypisane wejściówki. Nie można usunąć rodzaju karnetu, jeśli jest on przypisany do klienta.
                     </p>
@@ -105,8 +105,8 @@ export const PassTypeSettingsModal: React.FC<ModalContextType> = ({
                         <Form.Group className="mb-3" controlId="passDescription">
                             <Form.Label className="fw-semibold">Opis</Form.Label>
                             <Form.Control
-                                    as="textarea" 
-                                    rows={3} 
+                                as="textarea"
+                                rows={3}
                                 type="text"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
@@ -126,17 +126,18 @@ export const PassTypeSettingsModal: React.FC<ModalContextType> = ({
                         <Form.Group>
                             {confirmDeletePass ? (
                                 <div className="d-flex gap-2">
+                                    <Button variant="outline-black" onClick={() => setConfirmDeletePass(false)}>
+                                        Anuluj
+                                    </Button>
                                     <Button variant="danger" onClick={handleDeletePassType} className="me-2">
                                         Potwierdź usunięcie
                                     </Button>
-                                    <Button variant="outline-secondary" onClick={() => setConfirmDeletePass(false)}>
-                                        Anuluj
-                                    </Button>
+                                    
                                 </div>
 
 
                             ) : (
-                                <Button variant="outline-danger" onClick={() => setConfirmDeletePass(true)} className="me-2">
+                                <Button variant="outline-black" onClick={() => setConfirmDeletePass(true)} className="me-2">
                                     Usuń karnet
                                 </Button>
                             )}
@@ -154,13 +155,16 @@ export const PassTypeSettingsModal: React.FC<ModalContextType> = ({
                         </Alert>
                     )}
                 </Modal.Body>
-                <Modal.Footer className="border-0">
-                    <Button variant="outline-secondary" onClick={handleClose}>
+                <Modal.Footer className="border-0 p-1 bg-gym d-flex justify-content-end">
+                    <Button variant="outline-black" onClick={handleClose}>
                         Zamknij
                     </Button>
-                    <Button variant="success" onClick={handleSave}>
-                        Zapisz zmiany
-                    </Button>
+                    {!confirmDeletePass && (
+                        <Button variant="black" onClick={handleSave}>
+                            Zapisz zmiany
+                        </Button>
+                    )}
+
                 </Modal.Footer>
             </Modal>
 

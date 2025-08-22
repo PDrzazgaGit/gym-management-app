@@ -65,14 +65,14 @@ export class ACRManager extends EventEmitter {
 
   /** Odczyt danych z karty */
   async read(): Promise<CardData> {
-    if (!this.reader) throw new AppError("Czytnik nie jest dostępny");
+    if (!this.reader) throw new AppError("Czytnik nie jest dostępny.");
 
     try {
       const blockNumber = 1; // zapisujemy UUID w pierwszym bloku danych (po UID)
 
       // autoryzacja Key B
       const authorized = await this.reader.authenticate(blockNumber, KEY_TYPE_B, 'ffffffffffff');
-      if (!authorized) throw new Error(`Nie udało się uwierzytelnić bloku ${blockNumber}`);
+      if (!authorized) throw new AppError(`Nie udało się uwierzytelnić bloku ${blockNumber}.`);
 
       const data = await this.reader.read(blockNumber, 16); // 16 bajtów
       return this.crypto.decryptCardData(data);
@@ -87,7 +87,7 @@ export class ACRManager extends EventEmitter {
 
   /** Zapis danych na karcie */
   async write(data: CardData): Promise<void> {
-    if (!this.reader) throw new AppError("Czytnik nie jest dostępny");
+    if (!this.reader) throw new AppError("Czytnik nie jest dostępny.");
 
     try {
       const encrypted = this.crypto.encryptCardData(data); // Buffer 16 bajtów

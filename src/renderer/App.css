@@ -14,23 +14,38 @@
     color: #D7F902 !important;
     /* Twój kolor przy najechaniu */
 }
-/*
+
 @font-face {
-    font-family: 'Bebas Neue';
-    src: url('./assets/BebasNeue-Regular.ttf') format('truetype');
+    font-family: 'Oswald';
+    src: url('./assets/Oswald-VariableFont_wght.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
-body {
-    font-family: 'Bebas Neue', sans-serif;
-}
-*/
 
-html, body, #root {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+body {
+    font-family: 'Oswald', sans-serif;
+}
+
+:root {
+    --base-font-size: 18px;
+    --bg-gym: #D7F902; /* przykładowy kolor */
+}
+
+html {
+    font-size: var(--base-font-size);
+}
+
+body {
+    font-size: 0.9rem;
+}
+
+html,
+body,
+#root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 .input-group-text {
@@ -40,28 +55,93 @@ html, body, #root {
 }
 
 .btn-gym {
-    background-color: white;
-    color: inherit;
-    border: 0;
-    border-color: transparent;
+    background-color: black;
+    color: white;
+    border: solid 1px;
+    border-color: black;
 }
 
-.btn-gym:hover {
-
-    color: inherit;
+.btn-gym:hover, .btn-gym:active:focus {
+    color: black;
     background-color: #D7F902;
+    border: solid 1px;
+    border-color: black;
+}
+
+.btn-outline-gym {
+    background-color: white;
+    color: #D7F902;
+    border: solid 1px;
+    border-color: #D7F902;
+}
+
+.btn-outline-gym:hover, .btn-outline-gym:active:focus {
+    background-color: #D7F902;
+    color: white;
+}
+
+.btn-black {
+    background-color: black;
+    color: white;
+    border: solid 1px;
+    border-color: black;
+}
+
+.btn-black:hover, .btn-black:active:focus {
+    color: black;
+    background-color: white;
+    border: solid 1px;
+    border-color: black;
+}
+
+.btn-outline-black{
+    background-color: white;
+    color: black;
+    border: solid 1px;
+    border-color: black;
+}
+
+.btn-outline-black:hover, .btn-outline-black:active:focus {
+    color: white;
+    background-color: black;
+    border: solid 1px;
+    border-color: black;
+}
+
+.bg-gradient {
+    background: linear-gradient(to bottom,
+            #ffffff 0%,
+            /* początek */
+            #000000 200%) !important;
+}
+
+
+.text-gym {
+    color: #D7F902;
+}
+
+
+
+.bg-light-grey {
+    background-color: rgb(190, 190, 190);
 }
 
 .form-check-input:checked {
-    background-color:black;
+    background-color: black;
     border-color: black;
     color: black;
-  }
+}
 
-   @keyframes pulse {
-        0% { transform: scale(1); }
-        70% { transform: scale(1.08); }
-        100% { transform: scale(1); }
-      }
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
 
-  
+    70% {
+        transform: scale(1.08);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}

@@ -56,19 +56,19 @@ export const AssignCardToPassModal: React.FC<ModalContextType> = ({
         <>
             <Modal
                 show={show}
-                onHide={handleClose}
-                size="lg"
+                onHide={handleClose} 
                 centered
                 backdrop="static"
                 keyboard={false}
                 contentClassName="shadow rounded-3"
                 animation
+                 size="lg"
             >
                 <Modal.Header
                     closeButton
-                    className="bg-primary text-white border-0"
+                    className="bg-black text-white border-0"
                 >
-                    <Modal.Title className="fw-semibold fs-5">
+                    <Modal.Title className="fw-semibold fs-5 mb-0">
                         Przypisz kartę RFID do karnetu
                     </Modal.Title>
                 </Modal.Header>
@@ -89,14 +89,14 @@ export const AssignCardToPassModal: React.FC<ModalContextType> = ({
                         </Alert>
                     )}
                 </Modal.Body>
-                <Modal.Footer className="border-0">
-                    <Button variant="outline-secondary" onClick={handleClose}>
+                <Modal.Footer className="border-0 p-1 bg-gym d-flex justify-content-end">
+                    <Button variant="black" onClick={handleClose}>
                         Zamknij
                     </Button>
                 </Modal.Footer>
             </Modal>
 
-            <Button className={className} variant="outline-primary" onClick={() => setShow(true)}>
+            <Button className={className} variant="gym" onClick={() => setShow(true)}>
                 Przypisz kartę
             </Button>
         </>

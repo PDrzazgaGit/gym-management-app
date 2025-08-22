@@ -67,7 +67,7 @@ export class BackupService {
 
       return filePaths[0];
     } catch (error: any) {
-      throw new AppError("Nie udało się przywrócić backupu", error);
+      throw new AppError("Nie udało się przywrócić backupu.", error);
     }
   }
 }

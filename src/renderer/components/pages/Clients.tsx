@@ -120,20 +120,20 @@ export const Clients = () => {
     <Container fluid className="py-3" style={{ maxHeight: "100%", overflowY: "auto" }}>
       {/* Karta wyszukiwania klientów */}
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="fw-bold text-primary fs-2 m-0">
+        <h2 className="fw-bold text-black fs-2 m-0">
           Ewidencja klientów
         </h2>
       </div>
       <Row>
-        <Col>
+        <Col md={12} lg={6}>
           {/* Karta z formularzem dodawania klienta */}
-          <Card className="mb-3 shadow-sm border-0">
-            <Card.Header className="bg-primary text-white border-0">
-              <Card.Title>Dodaj klienta</Card.Title>
+          <Card className="mb-3 shadow border-0 bg-white">
+            <Card.Header className="bg-black text-white border-0">
+              <Card.Title className="mb-0">Dodaj klienta</Card.Title>
             </Card.Header>
             <Card.Body>
 
-              <Form.Group className="mb-2">
+              <Form.Group className="mb-3">
                 <Form.Label>Imię</Form.Label>
                 <Form.Control
                   placeholder="Wpisz imię"
@@ -143,7 +143,7 @@ export const Clients = () => {
                 ></Form.Control>
               </Form.Group>
 
-              <Form.Group className="mb-2">
+              <Form.Group className="mb-3">
                 <Form.Label>Nazwisko</Form.Label>
                 <Form.Control
                   placeholder="Wpisz nazwisko"
@@ -152,7 +152,7 @@ export const Clients = () => {
                   type="text"
                 />
               </Form.Group>
-              <Form.Group className={showAlias ? "mb-2" : ''}>
+              <Form.Group className={showAlias ? "mb-3" : ''}>
                 <Form.Label>Telefon</Form.Label>
                 <Form.Control
                   placeholder="Wpisz telefon (opcjonalnie)"
@@ -177,18 +177,18 @@ export const Clients = () => {
               )}
 
             </Card.Body>
-            <Card.Footer className="border-0 bg-white">
-              <Button variant="outline-success" onClick={handleAddClient}>
+            <Card.Footer className="border-0 bg-gym d-flex justify-content-end p-2">
+              <Button variant="black" onClick={handleAddClient}>
                 Dodaj klienta
               </Button>
             </Card.Footer>
           </Card>
         </Col>
-        <Col>
+        <Col md={12} lg={6}>
           {/* Karta wyszukiwania klientów */}
-          <Card className="mb-3 shadow-sm border-0">
-            <Card.Header className="bg-primary text-white border-0">
-              <Card.Title>Znajdź osobę</Card.Title>
+          <Card className="mb-3 shadow border-0 bg-white">
+            <Card.Header className="bg-black text-white border-0">
+              <Card.Title className="mb-0">Znajdź osobę</Card.Title>
             </Card.Header>
             <Card.Body>
               <Form.Group>
@@ -199,14 +199,14 @@ export const Clients = () => {
                     value={search}
                     placeholder="Wpisz szukaną frazę..."
                   />
-                  <Button variant="outline-success"  onClick={handleSearch}>
+                  <Button variant="gym" onClick={handleSearch}>
                     <Search />
                   </Button>
                 </InputGroup>
               </Form.Group>
             </Card.Body>
-            <Card.Footer className="border-0 bg-white">
-              <InputGroup className="flex-wrap">
+            <Card.Footer className="border-0 bg-gym d-flex justify-content-end p-2">
+              <InputGroup className="flex-wrap d-flex justify-content-end">
                 <Form.Check
                   id="imie_check"
                   label="Imię"
@@ -244,45 +244,51 @@ export const Clients = () => {
 
 
       {/* Karta z tabelą klientów */}
-      <Card className="mb-3 shadow-sm border-0" style={{ maxHeight: "40vh", overflowY: "auto" }}>
-        <Card.Header className="bg-primary text-white border-0">
-              <Card.Title>Lista klientów</Card.Title>
-            </Card.Header>
+      <Card className="mb-3 shadow border-0 bg-white" >
+        <Card.Header className="bg-black text-white border-0">
+          <Card.Title className="mb-0">Lista klientów</Card.Title>
+        </Card.Header>
         <Card.Body>
-          <Table hover responsive>
-            <thead className="table-light">
-              <tr>
-                <th className="text-muted">LP.</th>
-                <th className="text-muted">IMIĘ</th>
-                <th className="text-muted">NAZWISKO (ALIAS)</th>
-                <th className="text-muted">TELEFON</th>
-                <th className="text-muted">KARNET</th>
-              </tr>
-            </thead>
-            <tbody>
-              {clientList &&
-                clientList.map((clientData, index) => (
-                  <tr
-                    key={clientData.id}
-                    style={{ cursor: "pointer" }}
-                    onClick={() => {
-                      setClient(clientData);
-                      navigate("/clientpanel");
-                    }}
-                  >
-                    <td>{index + 1}.</td>
-                    <td>{clientData.name}</td>
-                    <td>
-                      {clientData.surname}
-                      {clientData.alias ? ` (${clientData.alias})` : ""}
-                    </td>
-                    <td>{clientData.phone ? clientData.phone : "-"}</td>
-                    <td>{clientData.pass ? "TAK" : "NIE"}</td>
-                  </tr>
-                ))}
-            </tbody>
-          </Table>
+          <div style={{ maxHeight: "32vh", overflowY: "auto" }}>
+            <Table hover>
+              <thead className="table-light" style={{ position: "sticky", top: 0, zIndex: 10, backgroundColor: "white" }}>
+                <tr>
+                  <th className="text-muted">LP.</th>
+                  <th className="text-muted">IMIĘ</th>
+                  <th className="text-muted">NAZWISKO (ALIAS)</th>
+                  <th className="text-muted">TELEFON</th>
+                  <th className="text-muted">KARNET</th>
+                </tr>
+              </thead>
+              <tbody>
+                {clientList &&
+                  clientList.map((clientData, index) => (
+                    <tr
+                      key={clientData.id}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        setClient(clientData);
+                        navigate("/clientpanel");
+                      }}
+                    >
+                      <td>{index + 1}.</td>
+                      <td>{clientData.name}</td>
+                      <td>
+                        {clientData.surname}
+                        {clientData.alias ? ` (${clientData.alias})` : ""}
+                      </td>
+                      <td>{clientData.phone ? clientData.phone : "-"}</td>
+                      <td>{clientData.pass ? "TAK" : "NIE"}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </Table>
+          </div>
+
         </Card.Body>
+        <Card.Footer className="bg-gym text-black border-0 text-end fs-8 p-2">
+          Wybierz klienta z listy aby wyświetlić profil
+        </Card.Footer>
       </Card>
 
       <PoppingModal

@@ -22,7 +22,7 @@ export const AnimatedCircle: React.FC<CircleProps> = ({ deviceConnected, dataRea
                             ? "var(--bs-success-bg-subtle)"
                             : cardInserted
                                 ? "var(--bs-warning-bg-subtle)"
-                                : "var(--bs-primary-bg-subtle)"
+                                : "var(--bg-gym)"
 
                     ,
                     color: !deviceConnected
@@ -31,7 +31,7 @@ export const AnimatedCircle: React.FC<CircleProps> = ({ deviceConnected, dataRea
                             ? "var(--bs-success)"
                             : cardInserted
                                 ? "var(--bs-warning)"
-                                : "var(--bs-primary)",
+                                : "var(--bs-black)",
                     animation: deviceConnected && !cardInserted ? "pulse 1.8s infinite" : (!dataReady ? "pulse 0.5s infinite" : "none"),
                 }}
             >

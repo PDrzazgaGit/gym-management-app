@@ -21,13 +21,13 @@ interface StartListProps {
 export const StartListModal: React.FC<StartListProps> = ({ pass, maxHeight, refreshKey, onSave, show, setShow }) => {
   const trainingManager = TrainingSessionManager.getInstance();
 
-  const {setTraining} = useTraining();
-  const navigate = useNavigate();
+  const { setTraining } = useTraining();
 
   const [trainingSessions, setTrainingSessions] = useState<TrainingSession[]>();
   const [trainingDay, setTrainingDay] = useState<Date | null>(new Date());
   const [trainingDayString, setTrainingDayString] = useState(DateFormatter.formatToDateOnly(new Date()));
   const [trainingsDayFilter, setTrainingsDayFilter] = useState<TrainingsDayFilter>(TrainingsDayFilter.GETBYDAY);
+  const [confirmButton, setConfirmButton] = useState(false);
 
   const isToday = (trainingDate: Date): boolean => {
     const today = new Date();
@@ -36,7 +36,7 @@ export const StartListModal: React.FC<StartListProps> = ({ pass, maxHeight, refr
       trainingDate.getMonth() === today.getMonth() &&
       trainingDate.getDate() === today.getDate()
     );
-}
+  }
 
   const handleClose = () => {
     onSave?.();
@@ -108,17 +108,17 @@ export const StartListModal: React.FC<StartListProps> = ({ pass, maxHeight, refr
     >
       <Modal.Header
         closeButton
-        className="bg-primary text-white border-0"
+        className="bg-black text-white border-0"
       >
         <Modal.Title className="fw-semibold fs-5">
           {`Rozpocznij trening: ${pass.client.name} ${pass.client.surname} ${pass.client.alias ? `(${pass.client.alias})` : ''}`}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form.Group className="mb-2">
+        <Form.Group className="mb-3">
           <InputGroup>
             <Dropdown>
-              <Dropdown.Toggle variant="outline-primary">
+              <Dropdown.Toggle variant="outline-black">
                 {trainingsDayFilter === TrainingsDayFilter.GETBYDAY && isToday(trainingDay)
                   ? "Dzisiaj"
                   : trainingsDayFilter}
@@ -152,11 +152,14 @@ export const StartListModal: React.FC<StartListProps> = ({ pass, maxHeight, refr
             </Button>
           </InputGroup>
         </Form.Group>
-        <Form.Group className="mb-2">
+        <Form.Group className="mb-3">
           <Form.Label>{getTableTitle()}</Form.Label>
           <div style={{ maxHeight: maxHeight ?? '65vh', overflowY: "auto" }}>
-            <Table hover responsive>
-              <thead className="table-light">
+            <Table hover>
+              <thead
+                className="table-light"
+                style={{ position: "sticky", top: 0, zIndex: 10, backgroundColor: "white" }}
+              >
                 <tr>
                   <th>LP.</th>
                   <th>Status</th>
@@ -166,9 +169,11 @@ export const StartListModal: React.FC<StartListProps> = ({ pass, maxHeight, refr
               </thead>
               <tbody>
                 {trainingSessions?.map((session, index) => (
-                  <tr key={index} style={{cursor: "pointer"}} onClick={()=>{
-                    handleStartPlannedTraining(session)
-                  }}>
+                  <tr
+                    key={index}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleStartPlannedTraining(session)}
+                  >
                     <td>{index + 1}</td>
                     <td>{session.status}</td>
                     <td>
@@ -183,14 +188,26 @@ export const StartListModal: React.FC<StartListProps> = ({ pass, maxHeight, refr
             </Table>
           </div>
         </Form.Group>
-        <Form.Group>
-          <Button variant="outline-success" onClick={handleStartUnPlannedTraining}>
-            Rozpocznij nieplanowany trening
-          </Button>
-        </Form.Group>
       </Modal.Body>
-      <Modal.Footer className="border-0">
-        <Button variant="outline-secondary" onClick={handleClose}>
+      <Modal.Footer className="border-0 p-1 bg-gym d-flex  justify-content-between">
+        {confirmButton && (
+          <div className="d-flex gap-2">
+           
+            <Button variant="success" onClick={handleStartUnPlannedTraining}>
+              Potwierdź rozpoczęcie
+            </Button>
+             <Button variant="outline-black" onClick={()=>setConfirmButton(false)}>
+              Anuluj
+            </Button>
+          </div>
+
+        ) || (
+            <Button variant="black" onClick={()=>setConfirmButton(true)}>
+              Rozpocznij nieplanowany trening
+            </Button>
+          )}
+
+        <Button variant="outline-black" onClick={handleClose}>
           Zamknij
         </Button>
       </Modal.Footer>

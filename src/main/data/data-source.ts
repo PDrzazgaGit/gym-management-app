@@ -18,6 +18,8 @@ if (!fs.existsSync(dbFolderPath)) {
     fs.mkdirSync(dbFolderPath, { recursive: true });
 }
 
+const loggerService = LoggerService.getInstance();
+
 // Pełna ścieżka do pliku bazy
 const dbFilePath = path.join(dbFolderPath, "gymdb.sqlite");
 
@@ -34,21 +36,21 @@ export const AppDataSource = new DataSource({
 const originalDestroy = AppDataSource.destroy.bind(AppDataSource);
 
 AppDataSource.destroy = async function () {
-    LoggerService.info('Closing database...');
+    loggerService.info('Closing database...');
     
     await originalDestroy();
     
-    LoggerService.info('Database closed');
+    loggerService.info('Database closed');
 };
 
 const originalInitialize = AppDataSource.initialize.bind(AppDataSource);
 
 AppDataSource.initialize = async function () {
-    LoggerService.info('Initializing database...');
+    loggerService.info('Initializing database...');
 
     const ds = await originalInitialize();
     
-    LoggerService.info('Database initialized');
+    loggerService.info('Database initialized');
 
     return ds;
 };

@@ -31,6 +31,8 @@ export const PassTypes = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
 
+  const [refreshKey, setRefreshKey] = useState(0);
+
   // Pobierz karnety
   useEffect(() => {
     if (!passTypes) {
@@ -39,7 +41,7 @@ export const PassTypes = () => {
         setPassTypes(result);
       })();
     }
-  }, [passTypes]);
+  }, [passTypes, refreshKey]);
 
   const handleAddPass = async () => {
     setMessage(null);
@@ -64,49 +66,21 @@ export const PassTypes = () => {
 
   return (
     <Container fluid className="py-3" style={{ height: "100%", overflow: "hidden" }}>
-      <h2 className="mb-4 text-primary fw-bold">Dostępne karnety</h2>
-      <Row style={{ height: "100%" }}>
-        <Col md={7} style={{ overflowY: "auto", maxHeight: "65vh" }}>
-          <Card className="shadow-sm mb-3 border-0">
-            <Card.Header className="bg-primary text-white border-0">
-              <Card.Title>Lista karnetów</Card.Title>
+      {/* Nagłówek u góry */}
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2 className="fw-bold text-black fs-2 m-0">
+          Rodzaje karnetów
+        </h2>
+      </div>
+      <Row>
+        <Col md={12} lg={4}>
+          <Card className="shadow mb-3 border-0 bg-white">
+            <Card.Header className="bg-black text-white border-0">
+              <Card.Title className="mb-0">Nowy karnet</Card.Title>
             </Card.Header>
             <Card.Body>
-              <Table responsive hover>
-                <thead className="table-light">
-                  <tr>
-                    <th className="text-muted">LP.</th>
-                    <th className="text-muted">NAZWA</th>
-                    <th className="text-muted">OPIS</th>
-                    <th className="text-muted">WEJŚCIA</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {passTypes &&
-                    passTypes.map((passTypeData, index) => (
-                      <PassTypeSettingsModal passType={passTypeData} key={passTypeData.id} onSave={() => setPassTypes(undefined)}>
-                        <tr key={passTypeData.id}>
-                          <td>{index + 1}.</td>
-                          <td>{passTypeData.name}</td>
-                          <td>{passTypeData.description} </td>
-                          <td>{passTypeData.entry}</td>
-                        </tr>
-                      </PassTypeSettingsModal>
-
-                    ))}
-                </tbody>
-              </Table>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={5}>
-          <Card className="shadow-sm mb-3 border-0">
-            <Card.Header className="bg-primary text-white border-0">
-                          <Card.Title>Nowy karnet</Card.Title>
-                        </Card.Header>
-            <Card.Body>
               <Form>
-                <Form.Group className="mb-2" controlId="passName">
+                <Form.Group className="mb-3" controlId="passName">
                   <Form.Label>Nazwa</Form.Label>
                   <Form.Control
                     type="text"
@@ -117,7 +91,7 @@ export const PassTypes = () => {
                   />
                 </Form.Group>
 
-                <Form.Group className="mb-2" controlId="passDescription">
+                <Form.Group className="mb-3" controlId="passDescription">
                   <Form.Label>Opis</Form.Label>
                   <Form.Control
                     as="textarea"
@@ -128,30 +102,74 @@ export const PassTypes = () => {
                     onChange={(e) => setDescription(e.target.value)}
                   />
                 </Form.Group>
-
-                <Form.Group className="mb-2" controlId="passEntries">
+                <Form.Group controlId="passEntries">
                   <Form.Label>Wejścia</Form.Label>
                   <Form.Control
                     type="number"
-                    placeholder="Ilość wejść"
+                    placeholder="Wpisz liczbę wejść"
                     value={entries !== null ? entries : ""}
                     onChange={(e) => setEntries(Number(e.target.value))}
                     min={1}
                   />
                 </Form.Group>
-
-                <Button
-                  variant="outline-success"
-                  onClick={handleAddPass}
-                  disabled={loading}
-                  className="w-100"
-                >
-                  {loading ? "Dodawanie..." : "Dodaj karnet"}
-                </Button>
               </Form>
             </Card.Body>
+            <Card.Footer className="border-0 bg-gym d-flex justify-content-end p-2">
+              <Button
+                variant="black"
+                onClick={handleAddPass}
+                disabled={loading}
+              >
+                {loading ? "Dodawanie..." : "Dodaj karnet"}
+              </Button>
+            </Card.Footer>
           </Card>
         </Col>
+        <Col md={12} lg={8}>
+          <Card className="shadow mb-3 border-0 bg-white">
+            <Card.Header className="bg-black text-white border-0">
+              <Card.Title className="mb-0">Lista karnetów</Card.Title>
+            </Card.Header>
+            <Card.Body>
+              <div style={{ maxHeight: '74vh', overflowY: "auto" }}>
+                <Table hover>
+                  <thead
+                    className="table-light"
+                    style={{ position: "sticky", top: 0, zIndex: 10, backgroundColor: "white" }}
+                  >
+                    <tr>
+                      <th className="text-muted">LP.</th>
+                      <th className="text-muted">NAZWA</th>
+                      <th className="text-muted">OPIS</th>
+                      <th className="text-muted">WEJŚCIA</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {passTypes &&
+                      passTypes.map((passTypeData, index) => (
+                        <PassTypeSettingsModal
+                          passType={passTypeData}
+                          key={passTypeData.id}
+                          onSave={() => setRefreshKey(prev => prev + 1)}
+                        >
+                          <tr>
+                            <td>{index + 1}.</td>
+                            <td>{passTypeData.name}</td>
+                            <td>{passTypeData.description}</td>
+                            <td>{passTypeData.entry}</td>
+                          </tr>
+                        </PassTypeSettingsModal>
+                      ))}
+                  </tbody>
+                </Table>
+              </div>
+            </Card.Body>
+            <Card.Footer className="bg-gym text-black border-0 text-end fs-8 p-2">
+              Wybierz karnet z listy aby wyświetlić szczegóły
+            </Card.Footer>
+          </Card>
+        </Col>
+
       </Row>
       <PoppingModal
         show={showErrorModal}

@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import {
   Container, Row, Col, InputGroup,
   ListGroup, Dropdown, Table, Form, FormCheck, Card, Modal,
-  Button
+  Button,
+  Badge
 } from "react-bootstrap";
 import { useClient } from "../../../renderer/hooks/useClient";
 import { ValidationService } from "../../ui-services/ValidationService";
@@ -18,6 +19,7 @@ import { AcrProvider } from "../../../renderer/react-context/AcrProvider";
 import { CardData } from "../../../main/data/CardData";
 import { Client } from "../../../main/entities/Client";
 import { PoppingModal } from "../PoppingModal";
+import { DateFormatter } from "../../../renderer/ui-services/DateFormatter";
 
 export const ClientPage = () => {
   const { client, setClient } = useClient();
@@ -142,101 +144,160 @@ export const ClientPage = () => {
     <Container fluid className="py-3" style={{ maxHeight: "100%", overflowY: "auto" }}>
       {/* Nagłówek strony */}
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="fw-bold text-primary fs-2 m-0">
+        <h2 className="fw-bold text-black fs-2 m-0">
           {client?.name}{" "}{client?.surname}{" "}
           {client?.alias && <small className="text-muted">({client.alias})</small>}
         </h2>
-        <div className="d-flex gap-2">
-          <Button variant="secondary" onClick={() => navigate("/clients")}>
-            Powrót
-          </Button>
-          <Button variant="success" onClick={handleSave}>
-            Zapisz zmiany
-          </Button>
-        </div>
       </div>
 
-      <PoppingModal
-        show={showErrorModal}
-        setShow={setShowErrorModal}
-        setMessage={setMessage}
-        message={message}
-      />
 
       <Row>
-        <Col md={6}>
-          <Card className="mb-3 shadow-sm border-0">
+        <Col>
+          <Card className="mb-3 shadow border-0 bg-white">
+            <Card.Header className="bg-black text-white border-0">
+              <Card.Title className="mb-0">Dane klienta</Card.Title>
+            </Card.Header>
             <Card.Body>
-              <Card.Title className="text-muted">Dane klienta</Card.Title>
-              <Form.Group className="mb-2">
-                <Form.Label>Imię</Form.Label>
-                <Form.Control
-                  value={name}
-                  onChange={(e) => setName(ValidationService.typingNaming(e.target.value))}
-                  placeholder="Wpisz imię"
-                />
-              </Form.Group>
-              <Form.Group className="mb-2">
-                <Form.Label>Nazwisko</Form.Label>
-                <Form.Control
-                  value={surname}
-                  onChange={(e) => setSurname(ValidationService.typingNaming(e.target.value))}
-                  placeholder="Wpisz nazwisko"
-                />
-              </Form.Group>
-              <Form.Group className="mb-2">
-                <Form.Label>Telefon</Form.Label>
-                <Form.Control
-                  value={phone}
-                  onChange={(e) => setPhone(ValidationService.typingPhone(e.target.value))}
-                  placeholder="Wpisz telefon (opcjonalnie)"
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Alias</Form.Label>
-                <Form.Control
-                  value={alias ?? ""}
-                  onChange={(e) => setAlias(ValidationService.typingAlias(e.target.value))}
-                  placeholder="Wpisz alias (opcjonalnie)"
-                />
-              </Form.Group>
-              {confirmDeleteClient ? (
-                <div className="d-flex gap-2">
-                  <Button variant="danger" onClick={handleDeleteClient}>
-                    Potwierdź usunięcie
-                  </Button>
-                  <Button variant="outline-secondary" onClick={() => setConfirmDeleteClient(false)}>
-                    Anuluj
-                  </Button>
-                </div>
-              ) : (
-                <Button variant="outline-danger" onClick={() => setConfirmDeleteClient(true)}>
-                  Usuń klienta
-                </Button>
-              )}
-            </Card.Body>
-          </Card>
-        </Col>
+              <Row>
+                <Col md={12} lg={8}>
+                  <Form.Group className="mb-1">
+                    <Form.Label>Imię</Form.Label>
+                    <Form.Control
+                      value={name}
+                      onChange={(e) => setName(ValidationService.typingNaming(e.target.value))}
+                      placeholder="Wpisz imię"
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-1">
+                    <Form.Label>Nazwisko</Form.Label>
+                    <Form.Control
+                      value={surname}
+                      onChange={(e) => setSurname(ValidationService.typingNaming(e.target.value))}
+                      placeholder="Wpisz nazwisko"
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-1">
+                    <Form.Label>Telefon</Form.Label>
+                    <Form.Control
+                      value={phone}
+                      onChange={(e) => setPhone(ValidationService.typingPhone(e.target.value))}
+                      placeholder="Wpisz telefon (opcjonalnie)"
+                    />
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>Alias</Form.Label>
+                    <Form.Control
+                      value={alias ?? ""}
+                      onChange={(e) => setAlias(ValidationService.typingAlias(e.target.value))}
+                      placeholder="Wpisz alias (opcjonalnie)"
+                    />
+                  </Form.Group>
 
-        <Col md={6}>
-          <Card className="mb-3 shadow-sm border-0">
-            <Card.Body>
-              <Card.Title className="text-muted">Karnet</Card.Title>
-              {client?.pass ? (
-                <>
-                  <ListGroup className="mb-3">
-                    <ListGroup.Item>{`Karnet: ${client.pass.passType.name}`}</ListGroup.Item>
-                    <ListGroup.Item>{`Data zakupu: ${client.pass.createdAt.toISOString().split("T")[0]}`}</ListGroup.Item>
-                    <ListGroup.Item>{`Pozostałych wejść: ${client.pass.entryLeft}`}</ListGroup.Item>
-                    <ListGroup.Item>{`Przypisana karta: ${client.pass.cardId ? "Tak" : "Nie"}`}</ListGroup.Item>
-                  </ListGroup>
+                </Col>
+                <Col md={12} lg={4} className="">
+                  {client?.pass ? (
+                    <>
+                      <Row>
+                        <Col className="d-flex justify-content-center align-items-center">
+                          <Form.Group className="mt-3 mb-3">
+                            <Badge bg="gym" className="fs-3 text-black ">
+                              Karnet
+                            </Badge>
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col>
+                          <Row className="mb-3">
+                            <Col>
+                              <Card.Text>Nazwa:</Card.Text>
+                            </Col>
+                            <Col>
+                              <Card.Text>{client.pass.passType.name}</Card.Text>
+                            </Col>
+                          </Row>
+                          <Row className="mb-3">
+                            <Col>
+                              <Card.Text>Data zakupu:</Card.Text>
+                            </Col>
+                            <Col>
+                              <Card.Text>{DateFormatter.formatToDateOnly(client.pass.createdAt)}</Card.Text>
+                            </Col>
+                          </Row>
+                          <Row className="mb-3">
+                            <Col>
+                              <Card.Text>Pozostałych wejść:</Card.Text>
+                            </Col>
+                            <Col>
+                              <Card.Text>{client.pass.entryLeft}</Card.Text>
+                            </Col>
+                          </Row>
+                          <Row className="mb-3">
+                            <Col>
+                              <Card.Text>Przypisana karta:</Card.Text>
+                            </Col>
+                            <Col>
+                              <Card.Text>{client.pass.cardId ? "Tak" : "Nie"}</Card.Text>
+                            </Col>
+                          </Row>
 
 
+                          <Row>
+                            <Col>
+                              {client.pass.entryLeft === 0 && (
+                                <Dropdown className="mb-3">
+                                  <Dropdown.Toggle variant="warning" disabled={!passTypes?.length}>
+                                    {selectedPassType ? selectedPassType.name : "Przedłuż karnet na"}
+                                  </Dropdown.Toggle>
+                                  <Dropdown.Menu>
+                                    {passTypes?.map((pt) => (
+                                      <Dropdown.Item key={pt.id} onClick={() => setSelectedPassType(pt)}>
+                                        {`${pt.name} (${pt.entry})`}
+                                      </Dropdown.Item>
+                                    ))}
+                                    <Dropdown.Item onClick={() => setSelectedPassType(null)}>Anuluj</Dropdown.Item>
+                                  </Dropdown.Menu>
+                                </Dropdown>
+                              ) || (
+                                  <AssignCardToPassModal
+                                    client={client}
+                                    onSave={async () => {
+                                      handleSave();
+                                    }}
+                                  />
+                                )}
+                            </Col>
+                            <Col>
+                              {confirmRemovePass ? (
+                                <div className="d-flex gap-2 ">
+                                  <Button variant="outline-black" onClick={() => setConfirmRemovePass(false)}>
+                                    Anuluj
+                                  </Button>
+                                  <Button variant="danger" onClick={handleRemovePass}>
+                                    Potwierdź
+                                  </Button>
 
-                  {client.pass.entryLeft === 0 && (
+                                </div>
+                              ) : (
+                                <div className="d-flex">
+                                  <Button variant="outline-black" onClick={() => setConfirmRemovePass(true)}>
+                                    Usuń karnet
+                                  </Button>
+
+                                </div>
+
+                              )}
+                            </Col>
+                          </Row>
+                        </Col>
+
+                      </Row>
+
+                    </>
+                  ) : (
                     <Dropdown className="mb-3">
                       <Dropdown.Toggle variant="warning" disabled={!passTypes?.length}>
-                        {selectedPassType ? selectedPassType.name : "Przedłuż karnet na"}
+                        {selectedPassType ? selectedPassType.name : "Dodaj karnet"}
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
                         {passTypes?.map((pt) => (
@@ -247,66 +308,71 @@ export const ClientPage = () => {
                         <Dropdown.Item onClick={() => setSelectedPassType(null)}>Anuluj</Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
-                  ) || (
-                      <AssignCardToPassModal
-                        className="mb-3"
-                        client={client}
-                        onSave={async () => {
-                          handleSave();
-                        }}
-                      />
-                    )}
-                  {confirmRemovePass ? (
-                    <div className="d-flex gap-2 ">
-                      <Button variant="danger" onClick={handleRemovePass}>
-                        Potwierdź usunięcie
-                      </Button>
-                      <Button variant="outline-secondary" onClick={() => setConfirmRemovePass(false)}>
-                        Anuluj
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="d-flex">
-                      <Button variant="outline-danger" onClick={() => setConfirmRemovePass(true)}>
-                        Usuń karnet
-                      </Button>
-
-                    </div>
-
                   )}
-                </>
-              ) : (
-                <Dropdown className="mb-3">
-                  <Dropdown.Toggle variant="warning" disabled={!passTypes?.length}>
-                    {selectedPassType ? selectedPassType.name : "Dodaj karnet"}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    {passTypes?.map((pt) => (
-                      <Dropdown.Item key={pt.id} onClick={() => setSelectedPassType(pt)}>
-                        {`${pt.name} (${pt.entry})`}
-                      </Dropdown.Item>
-                    ))}
-                    <Dropdown.Item onClick={() => setSelectedPassType(null)}>Anuluj</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              )}
+                </Col>
+              </Row>
             </Card.Body>
+            <Card.Footer className="border-0 bg-gym d-flex justify-content-between p-2">
+              {/* Lewa strona */}
+              <div className="d-flex gap-2">
+                {confirmDeleteClient ? (
+                  <>
+                    <Button
+                      variant="outline-black"
+                      onClick={() => setConfirmDeleteClient(false)}
+                    >
+                      Anuluj
+                    </Button>
+                    <Button variant="danger" onClick={handleDeleteClient}>
+                      Potwierdź usunięcie
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    variant="outline-black"
+                    onClick={() => setConfirmDeleteClient(true)}
+                  >
+                    Usuń klienta
+                  </Button>
+                )}
+              </div>
+
+              {/* Prawa strona */}
+              <div className="d-flex gap-2">
+                <Button variant="outline-black" onClick={() => navigate("/clients")}>
+                  Powrót
+                </Button>
+                <Button variant="black" onClick={handleSave}>
+                  Zapisz zmiany
+                </Button>
+              </div>
+            </Card.Footer>
+
           </Card>
         </Col>
       </Row>
 
+
+      <PoppingModal
+        show={showErrorModal}
+        setShow={setShowErrorModal}
+        setMessage={setMessage}
+        message={message}
+      />
+
+
+
       {client?.pass && (
 
         <Row>
-
-
-
-          <Col md={4}>
-            <Card className="mb-3 shadow-sm border-0">
+          <Col lg={4} md={12}>
+            <Card className="mb-3 shadow border-0 bg-white">
+                <Card.Header className="bg-black text-white border-0">
+                                          <Card.Title className="mb-0">Nowy trening</Card.Title>
+                                      </Card.Header>
               <Card.Body>
-                <Card.Title className="text-muted">Nowy trening</Card.Title>
-                <Form.Group className="mb-2">
-                  <Form.Label>Opis</Form.Label>
+               
+                <Form.Group className="mb-1">
                   <Form.Control
                     as="textarea"
                     rows={3}
@@ -316,28 +382,30 @@ export const ClientPage = () => {
                     placeholder="Wpisz opis"
                   />
                 </Form.Group>
-                <Form.Group className="mb-2">
+                <Form.Group className="mb-1">
                   <Form.Label>Data</Form.Label>
                   <Form.Control type="date" value={plannedDateString} onChange={(e) => {
                     setPlannedDateString(e.target.value);
                     updatePlannedDate(e.target.value, plannedHourString);
                   }} disabled={plannedHourString != ""} />
                 </Form.Group>
-                <Form.Group className="mb-3">
+                <Form.Group>
                   <Form.Label>Godzina</Form.Label>
                   <Form.Control type="time" value={plannedHourString} onChange={(e) => {
                     setPlannedHourString(e.target.value);
                     updatePlannedDate(plannedDateString, e.target.value);
                   }} disabled={!plannedDateString} />
                 </Form.Group>
-                <Button variant="primary" onClick={handleAddTraining} disabled={plannedDateString && !plannedHourString}>
+              </Card.Body>
+              <Card.Footer className="bg-gym text-black border-0 text-end fs-8 p-2">
+                 <Button variant="black" onClick={handleAddTraining} disabled={plannedDateString && !plannedHourString}>
                   {plannedDateString ? "Zaplanuj trening" : "Zaplanuj trening bez daty"}
                 </Button>
-              </Card.Body>
+              </Card.Footer>
             </Card>
           </Col>
-          <Col md={8}>
-            <TrainingList pass={client?.pass} maxHeight="20vh" refreshKey={refreshTrainings} onSave={handleSave} />
+          <Col lg={8} md={12}>
+            <TrainingList pass={client?.pass} maxHeight="17vh" refreshKey={refreshTrainings} onSave={handleSave} />
           </Col>
         </Row>
       )}

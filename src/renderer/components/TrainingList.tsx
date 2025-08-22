@@ -20,9 +20,9 @@ export const TrainingList: React.FC<TrainingListProps> = ({ pass, maxHeight, ref
   const trainingManager = TrainingSessionManager.getInstance();
   const { training } = useTraining();
   const [trainingSessions, setTrainingSessions] = useState<TrainingSession[]>();
-  const [trainingDay, setTrainingDay] = useState<Date | null>(new Date());
-  const [trainingDayString, setTrainingDayString] = useState(DateFormatter.formatToDateOnly(new Date()));
-  const [trainingsDayFilter, setTrainingsDayFilter] = useState<TrainingsDayFilter>(TrainingsDayFilter.GETBYWEEK);
+  const [trainingDay, setTrainingDay] = useState<Date | null>(null);
+  const [trainingDayString, setTrainingDayString] = useState('');
+  const [trainingsDayFilter, setTrainingsDayFilter] = useState<TrainingsDayFilter>(TrainingsDayFilter.GETALL);
   const [refreshTrainings, setRefreshTrainings] = useState(0);
   const [searchFilters, setSearchFilters] = useState({
     planned: false,
@@ -81,34 +81,15 @@ export const TrainingList: React.FC<TrainingListProps> = ({ pass, maxHeight, ref
   };
 
   return (
-    <Card className="mb-3 shadow-sm border-0">
-      <Card.Header className="bg-primary text-white border-0">
-        <Card.Title>Filtr treningów</Card.Title>
+    <Card className="mb-3 shadow border-0 bg-white">
+      <Card.Header className="bg-black text-white border-0">
+        <Card.Title className="mb-0">Filtr treningów</Card.Title>
       </Card.Header>
       <Card.Body>
-        <Form.Group className="mb-2">
-          <InputGroup className="flex-wrap">
-            {Object.entries(searchFilters).map(([key, value]) => (
-              <Form.Check
-                key={key}
-                inline
-                label={
-                  key
-                }
-                checked={value}
-                onChange={(e) =>
-                  setSearchFilters((prev) => ({ ...prev, [key]: e.target.checked }))
-                }
-                className="me-2"
-                id={`check_${key}`}
-              />
-            ))}
-          </InputGroup>
-        </Form.Group>
-        <Form.Group className="mb-2">
+        <Form.Group className="mb-3">
           <InputGroup>
             <Dropdown>
-              <Dropdown.Toggle variant="outline-primary">
+              <Dropdown.Toggle variant="outline-black">
                 {trainingsDayFilter === TrainingsDayFilter.GETBYDAY && isToday(trainingDay)
                   ? "Dzisiaj"
                   : trainingsDayFilter}
@@ -142,53 +123,76 @@ export const TrainingList: React.FC<TrainingListProps> = ({ pass, maxHeight, ref
             </Button>
           </InputGroup>
         </Form.Group>
-        <Form.Group className="mt-4 mb-2">
-          <Card.Title>{getTableTitle()}</Card.Title>
+        <Form.Group className="mb-3">
+          <InputGroup className="flex-wrap">
+            {Object.entries(searchFilters).map(([key, value]) => (
+              <Form.Check
+                key={key}
+                inline
+                label={
+                  key
+                }
+                checked={value}
+                onChange={(e) =>
+                  setSearchFilters((prev) => ({ ...prev, [key]: e.target.checked }))
+                }
+                className="me-2"
+                id={`check_${key}`}
+              />
+            ))}
+          </InputGroup>
         </Form.Group>
-        <Form.Group className="mb-2">
-          <div style={{ maxHeight: maxHeight ?? '65vh', overflowY: "auto" }}>
-          <Table hover responsive>
-            <thead className="table-light">
-              <tr>
-                <th>LP.</th>
-                {!pass && (<th>Klient</th>)}
-                <th>Status</th>
-                <th>Data planowana</th>
-                <th>Opis</th>
-              </tr>
-            </thead>
-            <tbody>
-              {trainingSessions?.map((session, index) => (
-                <TrainingSessionSettingsModal
-                  showClient={!pass}
-                  key={session.id}
-                  trainingSession={session}
-                  onSave={() => {
-                    setRefreshTrainings((prev) => prev + 1);
-                    onSave?.();
-                  }}
-                >
-                  <tr>
-                    <td>{index + 1}</td>
-                    {!pass && (<td>
-                      {`${session.pass.client.name} ${session.pass.client.surname}${session.pass.client.alias ? ` (${session.pass.client.alias})` : ""
-                        }`}
-                    </td>)}
-                    <td>{session.status}</td>
-                    <td>
-                      {session.plannedAt
-                        ? DateFormatter.formatToDateWithHours(session.plannedAt)
-                        : "Brak danych"}
-                    </td>
-                    <td>{session.description}</td>
-                  </tr>
-                </TrainingSessionSettingsModal>
-              ))}
-            </tbody>
-          </Table>
-        </div>
+        <Form.Group>
+          <div style={{ maxHeight: maxHeight ?? '63vh', overflowY: "auto" }}>
+            <Table hover>
+              <thead className="table-light" style={{ position: "sticky", top: 0, zIndex: 10, backgroundColor: "white" }}>
+                <tr>
+                  <th>LP.</th>
+                  {!pass && <th>Klient</th>}
+                  <th>Status</th>
+                  <th>Data planowana</th>
+                  <th>Opis</th>
+                </tr>
+              </thead>
+              <tbody>
+                {trainingSessions?.map((session, index) => (
+                  <TrainingSessionSettingsModal
+                    showClient={!pass}
+                    key={session.id}
+                    trainingSession={session}
+                    onSave={() => {
+                      setRefreshTrainings((prev) => prev + 1);
+                      onSave?.();
+                    }}
+                  >
+                    <tr>
+                      <td>{index + 1}</td>
+                      {!pass && (
+                        <td>
+                          {`${session.pass.client.name} ${session.pass.client.surname}${session.pass.client.alias ? ` (${session.pass.client.alias})` : ""}`}
+                        </td>
+                      )}
+                      <td>{session.status}</td>
+                      <td>
+                        {session.plannedAt
+                          ? DateFormatter.formatToDateWithHours(session.plannedAt)
+                          : "Brak danych"}
+                      </td>
+                      <td>{session.description}</td>
+                    </tr>
+                  </TrainingSessionSettingsModal>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+
         </Form.Group>
+
+
       </Card.Body>
+      <Card.Footer className="bg-gym text-black border-0 text-end fs-8 p-2">
+        {getTableTitle()}
+      </Card.Footer>
     </Card>
   );
 };
