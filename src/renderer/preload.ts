@@ -121,6 +121,8 @@ contextBridge.exposeInMainWorld("api", {
   other: {
     openFolder: (folderName: "db" | "log" | "config"): Promise<void> =>
       invoke("other:open-folder", folderName),
+    quitApp: (): Promise<void> => 
+      invoke("other:quit-app")
   },
   backup: {
     create: (): Promise<string | null> => invoke("backup:create"),

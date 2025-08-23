@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Col, Container, Nav, Row, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { PoppingModal } from "./PoppingModal";
+import { OtherApi } from "../ui-services/OtherAPI";
 
 //#D7F902
 
@@ -11,6 +13,11 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ width }) => {
 
     const logo = require("../assets/logo.jpg")
+    const [showModal, setShowModal] = useState(false);
+
+    const handleQuitApp = () => {
+        OtherApi.quitApp();
+    }
 
     const defaultWidth = 250;
     return (
@@ -35,11 +42,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ width }) => {
                         <Nav.Link as={Link} to="/passes" className="text-sidebar">Karnety</Nav.Link>
                         <Nav.Link as={Link} to="/clients" className="text-sidebar">Klienci</Nav.Link>
                         <Nav.Link as={Link} to="/settings" className="text-sidebar">Ustawienia</Nav.Link>
+                        <Nav.Link className="text-sidebar" onClick={()=>setShowModal(true)}>Wyjście</Nav.Link>
 
                     </Nav>
                 </Col>
 
             </Row>
+            <PoppingModal
+            type={"info"}
+                setShow={setShowModal}
+                show={showModal}
+                message="Czy na pewno chcesz zamknąć aplikację? Pamiętaj, że trwające treningi nie zostaną zakończone :)."
+                onSave={handleQuitApp}
+                title="Zamknij menedżera karnetów"
+                confirmText="Wyjdź"
+            />
 
 
         </Container>

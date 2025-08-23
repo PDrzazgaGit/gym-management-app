@@ -2,6 +2,7 @@ import type { Configuration } from 'webpack';
 
 import { rules } from './webpack.rules';
 import { plugins } from './webpack.plugins';
+import path from 'path';
 
 export const mainConfig: Configuration = {
   /**
@@ -18,6 +19,10 @@ export const mainConfig: Configuration = {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
   },
   externals: {
-  '@pokusew/pcsc-lite': 'commonjs2 @pokusew/pcsc-lite'
+  '@pokusew/pcsc-lite': 'commonjs2 @pokusew/pcsc-lite',
+  output: {
+    path: path.resolve(__dirname, 'dist/electron-main'),
+    filename: 'main.js'
+  },
 }
 };

@@ -5,17 +5,24 @@ interface ErrorModalProps {
     show: boolean;
     setShow: (show: boolean) => void;
     message: string | null;
-    setMessage: (message: string | null) => void;
+    setMessage?: (message: string | null) => void;
     title?: string;
     type?: "error" | "info";
+    confirmText?: string;
     onClose? : () => void; 
+    onSave? : () => void;
 }
 
-export const PoppingModal: React.FC<ErrorModalProps> = ({ show, setShow, message, setMessage, title = "Błąd", type = "error", onClose}) => {
+export const PoppingModal: React.FC<ErrorModalProps> = ({ show, setShow, message, setMessage, title = "Błąd", type = "error", confirmText="Zapisz", onClose, onSave}) => {
+
+    const handleSave = () => {
+        onSave?.();
+        handleClose();
+    }
 
     const handleClose = () => {
         setShow(false);
-        setMessage(null);
+        setMessage?.(null);
         onClose?.();
     }
 
@@ -39,6 +46,11 @@ export const PoppingModal: React.FC<ErrorModalProps> = ({ show, setShow, message
                 {message}
             </Modal.Body>
             <Modal.Footer className="border-0 p-1 bg-gym d-flex justify-content-end">
+                {onSave && (
+                    <Button variant="black" onClick={handleSave}>
+                        {confirmText}
+                    </Button>
+                )}
                 <Button variant="outline-black" onClick={handleClose}>
                     Zamknij
                 </Button>

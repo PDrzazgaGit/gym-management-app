@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, shell } from "electron";
+import { ipcMain, shell } from "electron";
 import { LoggerService } from "../services/LoggerService";
 import { AppError } from "../data/AppError";
 import { ok, fail } from "../utils/safeHandlerObjects"
@@ -6,7 +6,7 @@ import path from "path";
 
 const loggerService = LoggerService.getInstance();
 
-export function registerOtherHandlers() {
+export function registerOtherHandlers(app: Electron.App) {
   ipcMain.handle("other:open-folder", async (_event, folderName: "db" | "log" | "config") => {
     try {
       const userDataPath = app.getPath("userData");
@@ -26,7 +26,8 @@ export function registerOtherHandlers() {
     }
   });
 
-  ipcMain.handle("other:set-font-size", async (_event, fontSize: string) => {
-
+  ipcMain.handle("other:quit-app", async (_event) => {
+    loggerService.info(`[quit-app] Użytkownik zakończył działanie programu.`)
+    return ok(app.quit());
   })
 }

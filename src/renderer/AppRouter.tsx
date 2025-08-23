@@ -11,7 +11,9 @@ import { Settings } from './components/pages/Settings';
 
 export const AppRouter = () => {
     return (
+        
         <HashRouter>
+            
             <Routes>
                 <Route path="/" element={<App />}>
                     <Route index element={<Navigate to="/start" />} />

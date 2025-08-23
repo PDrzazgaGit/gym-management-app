@@ -78,6 +78,7 @@ declare global {
       };
       other: {
         openFolder(folderName: "db" | "log" | "config"): Promise<void>;
+        quitApp (): Promise<void>
       };
       backup: {
         create(): Promise<string | null>;  // zwraca ścieżkę zapisanego backupu lub null jeśli anulowano

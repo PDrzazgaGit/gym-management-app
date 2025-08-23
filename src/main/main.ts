@@ -36,7 +36,7 @@ app.whenReady().then(async () => {
     registerTrainingSessionHandlers();
     registerACRManagerHandlers(mainWindow, acrManager);
     registerBackupHandlers(mainWindow);
-    registerOtherHandlers();
+    registerOtherHandlers(app);
 
     loggerService.info('Handlers registered');
 
