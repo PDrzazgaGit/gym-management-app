@@ -20,9 +20,10 @@ export const mainConfig: Configuration = {
   },
   externals: {
   '@pokusew/pcsc-lite': 'commonjs2 @pokusew/pcsc-lite',
+  },
   output: {
     path: path.resolve(__dirname, '.webpack/main'),
     filename: 'index.js'
   },
-}
+
 };
