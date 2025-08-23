@@ -3,7 +3,7 @@
   "productName": "KeepItFit Management App",
   "version": "1.0.0",
   "description": "Aplikacja do zarządzania klientami i ich karnetami, a także treningami siłowni.",
-"main": ".webpack/main",
+  "main": ".webpack/main/index.js",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -23,6 +23,15 @@
       "dist/electron-main/**/*",
       "dist/renderer/**/*",
       "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "src/renderer/assets",
+        "to": "assets",
+        "filter": [
+          "**/*"
+        ]
+      }
     ],
     "mac": {
       "icon": "src/renderer/assets/logo.icns",
