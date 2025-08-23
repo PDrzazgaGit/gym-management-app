@@ -11,9 +11,10 @@ interface ErrorModalProps {
     confirmText?: string;
     onClose? : () => void; 
     onSave? : () => void;
+    closeText?: string;
 }
 
-export const PoppingModal: React.FC<ErrorModalProps> = ({ show, setShow, message, setMessage, title = "Błąd", type = "error", confirmText="Zapisz", onClose, onSave}) => {
+export const PoppingModal: React.FC<ErrorModalProps> = ({ show, setShow, message, setMessage, title = "Błąd", type = "error", confirmText="Zapisz", closeText="Zamknij", onClose, onSave}) => {
 
     const handleSave = () => {
         onSave?.();
@@ -52,7 +53,7 @@ export const PoppingModal: React.FC<ErrorModalProps> = ({ show, setShow, message
                     </Button>
                 )}
                 <Button variant="outline-black" onClick={handleClose}>
-                    Zamknij
+                    {closeText}
                 </Button>
             </Modal.Footer>
         </Modal>

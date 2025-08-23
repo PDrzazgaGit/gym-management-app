@@ -212,11 +212,11 @@ export const StartListModal: React.FC<StartListProps> = ({ pass, maxHeight, refr
       <Modal.Footer className="border-0 p-1 bg-gym d-flex  justify-content-between">
         {confirmButton && (
           <div className="d-flex gap-2">
-           
+             
             <Button variant="success" onClick={handleStartUnPlannedTraining}>
               Potwierdź rozpoczęcie
             </Button>
-             <Button variant="outline-black" onClick={()=>setConfirmButton(false)}>
+           <Button variant="outline-black" onClick={()=>setConfirmButton(false)}>
               Anuluj
             </Button>
           </div>

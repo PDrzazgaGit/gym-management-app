@@ -56,6 +56,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ width }) => {
                 onSave={handleQuitApp}
                 title="Zamknij menedżera karnetów"
                 confirmText="Wyjdź"
+                closeText={"Anuluj"}
             />
 
 

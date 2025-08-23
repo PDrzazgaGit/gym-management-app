@@ -69,8 +69,6 @@ export const Start = () => {
         if (training && training.status === TrainingSessionStatus.PLANNED) {
           const updated = await trainingManager.start(training.id);
           setTraining(updated);
-
-          console.log("what")
         }
       } catch (e) {
         setError(e.message);

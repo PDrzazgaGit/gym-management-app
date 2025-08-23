@@ -285,6 +285,7 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
 
                                     {confirmButton && (
                                         <ListGroup.Item className="border-0 d-flex gap-2">
+                                             
                                             <Button variant={confirmButton === "startTraining" ? "success" : "danger"} onClick={handleSave}>{ }
                                                 {confirmButton === "startTraining" ? "Potwierdź rozpoczęcie" : "Potwierdź odwołanie"}
                                             </Button>
@@ -297,6 +298,7 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
                                             >
                                                 Anuluj
                                             </Button>
+                                           
                                         </ListGroup.Item>
                                     )}
 
@@ -314,15 +316,16 @@ export const TrainingSessionSettingsModal: React.FC<ModalContextType> = ({ onSav
 
                 </Modal.Body>
                 <Modal.Footer className="border-0 p-1 bg-gym d-flex justify-content-end">
-                    <Button variant="outline-black" onClick={handleClose}>
-                        Anuluj
-                    </Button>
+                    
                     {/* Pokaż przycisk "Zapisz zmiany" tylko, gdy nie czekamy na potwierdzenie odwołania */}
                     {!confirmButton && (
                         <Button variant="black" onClick={handleSave} disabled={plannedDateString && !plannedHourString}>
                             Zapisz zmiany
                         </Button>
                     )}
+                    <Button variant="outline-black" onClick={handleClose}>
+                        Zamknij
+                    </Button>
                 </Modal.Footer>
             </Modal>
             {clickableChild}

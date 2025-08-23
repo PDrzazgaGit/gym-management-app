@@ -25,7 +25,6 @@ export const PassTypes = () => {
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [entries, setEntries] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false);
 
   // Modal błędu
   const [message, setMessage] = useState<string | null>(null);
@@ -54,13 +53,13 @@ export const PassTypes = () => {
 
   // Pobierz karnety
   useEffect(() => {
-    if (!passTypes) {
-      (async () => {
+    const fetch = async () => {
         const result = await passTypeManager.getAll();
         setPassTypes(result);
-      })();
-    }
-  }, [passTypes, refreshKey]);
+      }
+      fetch();
+    
+  }, [refreshKey]);
 
   const handleAddPass = async () => {
     setMessage(null);
@@ -69,18 +68,18 @@ export const PassTypes = () => {
       setMessage("Proszę uzupełnić wszystkie pola poprawnie.");
       return;
     }
-    setLoading(true);
+
     try {
       await passTypeManager.add(name.trim(), description.trim(), entries);
       setName("");
       setDescription("");
       setEntries(null);
-      setPassTypes(undefined); // odśwież listę
+      setRefreshKey(prev => prev+1) // odśwież listę
     } catch (error: any) {
       setShowErrorModal(true);
       setMessage(error.message || "Wystąpił błąd podczas dodawania.");
     }
-    setLoading(false);
+
   };
 
   return (
@@ -137,9 +136,8 @@ export const PassTypes = () => {
               <Button
                 variant="black"
                 onClick={handleAddPass}
-                disabled={loading}
               >
-                {loading ? "Dodawanie..." : "Dodaj karnet"}
+                Dodaj karnet
               </Button>
             </Card.Footer>
           </Card>

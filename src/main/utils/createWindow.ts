@@ -24,7 +24,6 @@ const iconPath = app.isPackaged
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });
-// console.log('Icon path:', iconPath, 'exists:', require('fs').existsSync(iconPath));
   mainWindow.maximize();
   mainWindow.show();
 

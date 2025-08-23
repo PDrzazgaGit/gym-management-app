@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, } from "react";
 import {
     Modal,
     Form,
@@ -75,7 +75,7 @@ export const PassTypeSettingsModal: React.FC<ModalContextType> = ({
                 keyboard={false}
                 contentClassName="shadow rounded-3"
                 animation
-                 size="lg"
+                size="lg"
             >
                 <Modal.Header
                     closeButton
@@ -126,13 +126,13 @@ export const PassTypeSettingsModal: React.FC<ModalContextType> = ({
                         <Form.Group>
                             {confirmDeletePass ? (
                                 <div className="d-flex gap-2">
-                                    <Button variant="outline-black" onClick={() => setConfirmDeletePass(false)}>
-                                        Anuluj
-                                    </Button>
+                                   
                                     <Button variant="danger" onClick={handleDeletePassType} className="me-2">
                                         Potwierdź usunięcie
                                     </Button>
-                                    
+ <Button variant="outline-black" onClick={() => setConfirmDeletePass(false)}>
+                                        Anuluj
+                                    </Button>
                                 </div>
 
 
@@ -156,15 +156,15 @@ export const PassTypeSettingsModal: React.FC<ModalContextType> = ({
                     )}
                 </Modal.Body>
                 <Modal.Footer className="border-0 p-1 bg-gym d-flex justify-content-end">
-                    <Button variant="outline-black" onClick={handleClose}>
-                        Zamknij
-                    </Button>
+
                     {!confirmDeletePass && (
                         <Button variant="black" onClick={handleSave}>
                             Zapisz zmiany
                         </Button>
                     )}
-
+                    <Button variant="outline-black" onClick={handleClose}>
+                        Zamknij
+                    </Button>
                 </Modal.Footer>
             </Modal>
 

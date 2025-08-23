@@ -198,98 +198,98 @@ export const ClientPage = () => {
                   {client?.pass ? (
                     <Card className="shadow border-0">
                       <Card.Header className="bg-gym border-0">
-<Card.Title className="text-black mb-0">
-                              Karnet
-                            </Card.Title>
+                        <Card.Title className="text-black mb-0">
+                          Karnet
+                        </Card.Title>
                       </Card.Header>
                       <Card.Body>
-                      <Row>
-                        <Col>
-                          <Row className="mb-3">
-                            <Col>
-                              <Card.Text>Nazwa:</Card.Text>
-                            </Col>
-                            <Col>
-                              <Card.Text>{client.pass.passType.name}</Card.Text>
-                            </Col>
-                          </Row>
-                          <Row className="mb-3">
-                            <Col>
-                              <Card.Text>Data zakupu:</Card.Text>
-                            </Col>
-                            <Col>
-                              <Card.Text>{DateFormatter.formatToDateOnly(client.pass.createdAt)}</Card.Text>
-                            </Col>
-                          </Row>
-                          <Row className="mb-3">
-                            <Col>
-                              <Card.Text>Pozostałych wejść:</Card.Text>
-                            </Col>
-                            <Col>
-                              <Card.Text>{client.pass.entryLeft}</Card.Text>
-                            </Col>
-                          </Row>
-                          <Row className="mb-3">
-                            <Col>
-                              <Card.Text>Przypisana karta:</Card.Text>
-                            </Col>
-                            <Col>
-                              <Card.Text>{client.pass.cardId ? "Tak" : "Nie"}</Card.Text>
-                            </Col>
-                          </Row>
+                        <Row>
+                          <Col>
+                            <Row className="mb-3">
+                              <Col>
+                                <Card.Text>Nazwa:</Card.Text>
+                              </Col>
+                              <Col>
+                                <Card.Text>{client.pass.passType.name}</Card.Text>
+                              </Col>
+                            </Row>
+                            <Row className="mb-3">
+                              <Col>
+                                <Card.Text>Data zakupu:</Card.Text>
+                              </Col>
+                              <Col>
+                                <Card.Text>{DateFormatter.formatToDateOnly(client.pass.createdAt)}</Card.Text>
+                              </Col>
+                            </Row>
+                            <Row className="mb-3">
+                              <Col>
+                                <Card.Text>Pozostałych wejść:</Card.Text>
+                              </Col>
+                              <Col>
+                                <Card.Text>{client.pass.entryLeft}</Card.Text>
+                              </Col>
+                            </Row>
+                            <Row className="mb-3">
+                              <Col>
+                                <Card.Text>Przypisana karta:</Card.Text>
+                              </Col>
+                              <Col>
+                                <Card.Text>{client.pass.cardId ? "Tak" : "Nie"}</Card.Text>
+                              </Col>
+                            </Row>
 
 
-                          <Row>
-                            <Col>
-                              {client.pass.entryLeft === 0 && (
-                                <Dropdown className="mb-3">
-                                  <Dropdown.Toggle variant="warning" disabled={!passTypes?.length}>
-                                    {selectedPassType ? selectedPassType.name : "Przedłuż karnet na"}
-                                  </Dropdown.Toggle>
-                                  <Dropdown.Menu>
-                                    {passTypes?.map((pt) => (
-                                      <Dropdown.Item key={pt.id} onClick={() => setSelectedPassType(pt)}>
-                                        {`${pt.name} (${pt.entry})`}
-                                      </Dropdown.Item>
-                                    ))}
-                                    <Dropdown.Item onClick={() => setSelectedPassType(null)}>Anuluj</Dropdown.Item>
-                                  </Dropdown.Menu>
-                                </Dropdown>
-                              ) || (
-                                  <AssignCardToPassModal
-                                    client={client}
-                                    onSave={async () => {
-                                      handleSave();
-                                    }}
-                                  />
+                            <Row>
+                              <Col>
+                                {client.pass.entryLeft === 0 && (
+                                  <Dropdown className="mb-3">
+                                    <Dropdown.Toggle variant="warning" disabled={!passTypes?.length}>
+                                      {selectedPassType ? selectedPassType.name : "Przedłuż karnet na"}
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                      {passTypes?.map((pt) => (
+                                        <Dropdown.Item key={pt.id} onClick={() => setSelectedPassType(pt)}>
+                                          {`${pt.name} (${pt.entry})`}
+                                        </Dropdown.Item>
+                                      ))}
+                                      <Dropdown.Item onClick={() => setSelectedPassType(null)}>Anuluj</Dropdown.Item>
+                                    </Dropdown.Menu>
+                                  </Dropdown>
+                                ) || (
+                                    <AssignCardToPassModal
+                                      client={client}
+                                      onSave={async () => {
+                                        handleSave();
+                                      }}
+                                    />
+                                  )}
+                              </Col>
+                              <Col>
+                                {confirmRemovePass ? (
+                                  <div className="d-flex gap-2 ">
+
+                                    <Button variant="danger" onClick={handleRemovePass}>
+                                      Potwierdź
+                                    </Button>
+                                    <Button variant="outline-black" onClick={() => setConfirmRemovePass(false)}>
+                                      Anuluj
+                                    </Button>
+                                  </div>
+                                ) : (
+                                  <div className="d-flex">
+                                    <Button variant="outline-black" onClick={() => setConfirmRemovePass(true)}>
+                                      Usuń karnet
+                                    </Button>
+
+                                  </div>
+
                                 )}
-                            </Col>
-                            <Col>
-                              {confirmRemovePass ? (
-                                <div className="d-flex gap-2 ">
-                                  <Button variant="outline-black" onClick={() => setConfirmRemovePass(false)}>
-                                    Anuluj
-                                  </Button>
-                                  <Button variant="danger" onClick={handleRemovePass}>
-                                    Potwierdź
-                                  </Button>
+                              </Col>
+                            </Row>
+                          </Col>
 
-                                </div>
-                              ) : (
-                                <div className="d-flex">
-                                  <Button variant="outline-black" onClick={() => setConfirmRemovePass(true)}>
-                                    Usuń karnet
-                                  </Button>
-
-                                </div>
-
-                              )}
-                            </Col>
-                          </Row>
-                        </Col>
-
-                      </Row>
-</Card.Body>
+                        </Row>
+                      </Card.Body>
                     </Card>
                   ) : (
                     <Dropdown className="mb-3">
@@ -314,14 +314,15 @@ export const ClientPage = () => {
               <div className="d-flex gap-2">
                 {confirmDeleteClient ? (
                   <>
+
+                    <Button variant="danger" onClick={handleDeleteClient}>
+                      Potwierdź usunięcie
+                    </Button>
                     <Button
                       variant="outline-black"
                       onClick={() => setConfirmDeleteClient(false)}
                     >
                       Anuluj
-                    </Button>
-                    <Button variant="danger" onClick={handleDeleteClient}>
-                      Potwierdź usunięcie
                     </Button>
                   </>
                 ) : (
@@ -336,11 +337,12 @@ export const ClientPage = () => {
 
               {/* Prawa strona */}
               <div className="d-flex gap-2">
-                <Button variant="outline-black" onClick={() => navigate("/clients")}>
-                  Powrót
-                </Button>
+
                 <Button variant="black" onClick={handleSave}>
                   Zapisz zmiany
+                </Button>
+                <Button variant="outline-black" onClick={() => navigate("/clients")}>
+                  Powrót
                 </Button>
               </div>
             </Card.Footer>
@@ -364,11 +366,11 @@ export const ClientPage = () => {
         <Row>
           <Col lg={4} md={12}>
             <Card className="mb-3 shadow border-0 bg-white">
-                <Card.Header className="bg-black text-white border-0">
-                                          <Card.Title className="mb-0">Nowy trening</Card.Title>
-                                      </Card.Header>
+              <Card.Header className="bg-black text-white border-0">
+                <Card.Title className="mb-0">Nowy trening</Card.Title>
+              </Card.Header>
               <Card.Body>
-               
+
                 <Form.Group className="mb-1">
                   <Form.Control
                     as="textarea"
@@ -395,7 +397,7 @@ export const ClientPage = () => {
                 </Form.Group>
               </Card.Body>
               <Card.Footer className="bg-gym text-black border-0 text-end fs-8 p-2">
-                 <Button variant="black" onClick={handleAddTraining} disabled={plannedDateString && !plannedHourString}>
+                <Button variant="black" onClick={handleAddTraining} disabled={plannedDateString && !plannedHourString}>
                   {plannedDateString ? "Zaplanuj trening" : "Zaplanuj trening bez daty"}
                 </Button>
               </Card.Footer>
