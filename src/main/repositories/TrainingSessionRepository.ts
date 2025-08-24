@@ -372,7 +372,13 @@ export class TrainingSessionRepository {
         }
 
         try {
-            return await this.repository.save(trainingSession);
+            const saved = await this.repository.save(trainingSession);
+
+            return await this.repository.findOneOrFail({
+                where: { id: saved.id },
+                relations: ['pass', 'pass.client'],
+            });
+
         } catch (error) {
             throw new AppError(`Nie udało się zmodyfikować sesji treningowej.`, error);
         }
