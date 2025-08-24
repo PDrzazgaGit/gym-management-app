@@ -155,7 +155,10 @@ export const Start = () => {
                         value={description}
                         type="text"
                         placeholder={"Wpisz opis"}
-                        onBlur={async () => await trainingManager.modify(training.id, description, training.plannedAt)}
+                        onBlur={async () => {
+                          const updated = await trainingManager.modify(training.id, description, training.plannedAt);
+                          setTraining(updated);
+                        }}
                       />
                     </Form.Group>
                   </Col>
